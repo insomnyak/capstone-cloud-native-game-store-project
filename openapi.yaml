@@ -1,0 +1,654 @@
+openapi: 3.0.0
+info:
+  title: Game Store Web and Mobile Services!
+  description:
+    A secured service that tracks products, invoice data and inventory for a Game Store.
+  version: 0.0.1
+  
+servers:
+  - url: 'http://localhost:8080'
+    description: Local dev server
+    
+paths:
+  /levelUp:
+    post:
+      summary: Creates a new levelup member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LevelUp'
+      responses:
+        '201':
+          description: A levelUp object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LevelUp'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete levelUp information. Some required fields missing.
+    get:
+      summary: Retrieves all levelUps
+      responses:
+        '200':
+          description: LevelUp list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LevelUp' 
+        '404':
+          description: Request not found.
+          
+  /levelUp/{levelUpId}:
+    get:
+      summary: Retrieves the levelUp information by Id.
+      parameters: 
+        - name: levelUpId
+          in: path
+          required: true
+          description: id of the levelUp you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: LevelUp object matching given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LevelUp'
+        '404':
+          description: Request not found.
+    put:
+      summary: Updates an exitsing levelUp
+      parameters: 
+        - name: levelUpId
+          in: path
+          required: true
+          description: id of the LevelUp you would like to retrieve.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LevelUp'
+      responses:
+        '201':
+          description: A levelUp object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LevelUp'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete levelUp information. Some required fields missing.
+    delete:
+      summary: Deletes a game based on the id
+      parameters: 
+        - name: levelUpId
+          in: path
+          required: true
+          description: Id of the levelUp you would like to delete.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: LevelUp successfully deleted.
+
+  /levelUp/customer/{customerId}:
+    get:
+      summary: Retrieves the levelUp information by customer Id.
+      parameters: 
+        - name: customerId
+          in: path
+          required: true
+          description: id of the customer whose LevelUp you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of Level Up objects given customer id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LevelUp'
+        '404':
+          description: Request not found.
+          
+  /invoice:
+    post:
+      summary: Creates a new invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invoice'
+      responses:
+        '201':
+          description: An invoice object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete Invoice information. Some required fields missing.
+    get:
+      summary: Retrieves all Invoices
+      responses:
+        '200':
+          description: Invoice list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice' 
+        '404':
+          description: Request not found.
+          
+  /invoice/{invoiceId}:
+    get:
+      summary: Retrieves the invoice information by Id.
+      parameters: 
+        - name: invoiceId
+          in: path
+          required: true
+          description: id of the invoice you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Invoice object matching given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: Request not found.
+    put:
+      summary: Updates an exitsing invoice
+      parameters: 
+        - name: invoiceId
+          in: path
+          required: true
+          description: id of the invoice you would like to retrieve.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invoice'
+      responses:
+        '201':
+          description: An invoice object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete invoice information. Some required fields missing.
+    delete:
+      summary: Deletes an invoice based on the id
+      parameters: 
+        - name: invoiceId
+          in: path
+          required: true
+          description: Id of the invoice you would like to delete.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Invoice successfully deleted.
+
+  /invoice/customer/{customerId}:
+    get:
+      summary: Retrieves the invoice information by customer Id.
+      parameters: 
+        - name: customerId
+          in: path
+          required: true
+          description: id of the customer whose invoice you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of invoices matching given customer id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+        '404':
+          description: Request not found.
+  
+  /inventory:
+    post:
+      summary: Creates a new inventory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+      responses:
+        '201':
+          description: An inventory object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete Inventory information. Some required fields missing.
+    get:
+      summary: Retrieves all Inventories
+      responses:
+        '200':
+          description: Inventory list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory' 
+        '404':
+          description: Request not found.
+          
+  /inventory/{inventoryId}:
+    get:
+      summary: Retrieves the inventory information by Id.
+      parameters: 
+        - name: inventoryId
+          in: path
+          required: true
+          description: id of the inventory you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Inventory object matching given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+        '404':
+          description: Request not found.
+    put:
+      summary: Updates an exitsing inventory
+      parameters: 
+        - name: inventoryId
+          in: path
+          required: true
+          description: id of the inventory you would like to retrieve.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+      responses:
+        '201':
+          description: An inventory object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete inventory information. Some required fields missing.
+    delete:
+      summary: Deletes an inventory based on the id
+      parameters: 
+        - name: inventoryId
+          in: path
+          required: true
+          description: Id of the inventory you would like to delete.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Inventory successfully deleted.
+
+  /product:
+    post:
+      summary: Creates a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete Product information. Some required fields missing.
+    get:
+      summary: Retrieves all Products
+      responses:
+        '200':
+          description: Product list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product' 
+        '404':
+          description: Request not found.
+          
+  /product/{productId}:
+    get:
+      summary: Retrieves the product information by Id.
+      parameters: 
+        - name: productId
+          in: path
+          required: true
+          description: id of the product you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product object matching given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Request not found.
+    put:
+      summary: Updates an exitsing product
+      parameters: 
+        - name: productId
+          in: path
+          required: true
+          description: id of the product you would like to retrieve.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '201':
+          description: A product object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete product information. Some required fields missing.
+    delete:
+      summary: Deletes a product based on the id
+      parameters: 
+        - name: productId
+          in: path
+          required: true
+          description: Id of the product you would like to delete.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product successfully deleted.
+
+  /product/invoice/{invoiceId}:
+    get:
+      summary: Retrieves the list of products information by customer Id.
+      parameters: 
+        - name: invoiceId
+          in: path
+          required: true
+          description: id of the invoice whose products you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of products matching given customer id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Request not found.   
+          
+  /product/inventory:
+    get:
+      summary: Retrieves the list of products information by whose quantity is greater than zero
+      responses:
+        '200':
+          description: List of products with quantity greater than zero
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Request not found.   
+  /customer:
+    post:
+      summary: Creates a new customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '201':
+          description: A customer object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete Customer information. Some required fields missing.
+    get:
+      summary: Retrieves all Customer
+      responses:
+        '200':
+          description: Customer list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer' 
+        '404':
+          description: Request not found.
+          
+  /customer/{customerId}:
+    get:
+      summary: Retrieves the customer information by Id.
+      parameters: 
+        - name: customerId
+          in: path
+          required: true
+          description: id of the customer you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Customer object matching given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          description: Request not found.
+    put:
+      summary: Updates an exitsing customer
+      parameters: 
+        - name: customerId
+          in: path
+          required: true
+          description: id of the customer you would like to retrieve.
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '201':
+          description: A customer object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '400':
+          description: Invalid request syntax.
+        '422':
+          description: Incomplete customer information. Some required fields missing.
+    delete:
+      summary: Deletes a customer based on the id
+      parameters: 
+        - name: customerId
+          in: path
+          required: true
+          description: Id of the customer you would like to delete.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Customer successfully deleted.     
+   
+          
+components:
+  schemas:
+    LevelUp:
+      type: object
+      properties:
+        levelUpId:
+          type: integer
+        customerId:
+          type: integer
+        points:
+          type: integer
+        memberDate: 
+          type: string
+          description: date
+          pattern: 'YYYY-MM-DD'
+      required: 
+        - customerId
+        - points
+        - memberDate
+    InvoiceItem:
+      type: object
+      properties:
+        invoiceItemId:
+          type: integer
+        invoiceId:
+          type: integer
+        inventoryId: 
+          type: integer
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+      required:
+        - inventoryId
+        - quantity
+        - unitPrice
+    Invoice:
+      type: object
+      properties:
+        invoiceId:
+          type: integer
+        customerId:
+          type: integer
+        purchaseDate: 
+          type: string
+          description: date
+          pattern: 'YYYY-MM-DD'
+        invoiceItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+    Inventory:
+      type: object
+      properties:
+        inventoryId:
+          type: integer
+        productId:
+          type: integer
+        quantity:
+          type: integer
+      required: 
+        - productId
+        - quantity
+    Product:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+          maxLength: 50
+        productDescription:
+          type: string
+          maxLength: 255
+        listPrice:
+          type: number
+        unitCost:
+          type: number
+    Customer:
+      type: object
+      properties:
+        customerId:
+          type: integer
+        firstName:
+          type: string
+          maxLength: 50
+        lastName:
+          type: string
+          maxLength: 50
+        street:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 50
+        zip:
+          type: string
+          maxLength: 10
+        email:
+          type: string
+          maxLength: 75
+        phone:
+          type: string
+          maxLength: 20
+      required:
+        - firstName
+        - lastName
+        - street
+        - city
+        - zip
+        - email
+        - phone
+        
+
+
+
+
+
+
