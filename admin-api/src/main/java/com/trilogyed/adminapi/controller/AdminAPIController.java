@@ -1,7 +1,8 @@
 package com.trilogyed.adminapi.controller;
 
-import com.trilogyed.adminapi.domain.InventoryViewModel;
 import com.trilogyed.adminapi.domain.InvoiceViewModel;
+import com.trilogyed.adminapi.domain.ItemViewModel;
+import com.trilogyed.adminapi.model.Customer;
 import com.trilogyed.adminapi.model.Inventory;
 import com.trilogyed.adminapi.model.LevelUp;
 import com.trilogyed.adminapi.model.Product;
@@ -102,28 +103,28 @@ public class AdminAPIController {
 
     @PostMapping(value = "/inventory")
     @ResponseStatus(HttpStatus.CREATED)
-    public InventoryViewModel createInventory(@RequestBody @Valid InventoryViewModel ivm)
+    public Inventory createInventory(@RequestBody @Valid Inventory inventory)
     {
         return null;
     }
 
     @GetMapping(value = "/inventory")
     @ResponseStatus(HttpStatus.OK)
-    public List<InventoryViewModel> getAllInventory()
+    public List<Inventory> getAllInventory()
     {
         return null;
     }
 
     @GetMapping(value = "/inventory/{inventoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public InventoryViewModel getInventoryByInventoryId(@PathVariable (name = "inventoryId") int inventoryId)
+    public Inventory getInventoryByInventoryId(@PathVariable (name = "inventoryId") int inventoryId)
     {
         return null;
     }
 
     @PutMapping(value = "/inventory/{inventoryId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateInventory(@RequestBody @Valid InventoryViewModel ivm, @PathVariable(name = "inventoryId") int inventoryId)
+    public void updateInventory(@RequestBody @Valid Inventory inventory, @PathVariable(name = "inventoryId") int inventoryId)
     {
 
     }
@@ -137,39 +138,87 @@ public class AdminAPIController {
 
     @PostMapping(value = "/product")
     @ResponseStatus(HttpStatus.CREATED)
-    public Product createProduct(@RequestBody @Valid Product product)
+    public ItemViewModel createProduct(@RequestBody @Valid ItemViewModel ivm)
     {
         return null;
     }
 
     @GetMapping(value = "/product")
     @ResponseStatus(HttpStatus.OK)
-    public List<Product> findAllProducts()
+    public List<ItemViewModel> findAllProducts()
     {
         return null;
     }
 
     @GetMapping(value = "/product/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public Product findProductByProductId(@PathVariable(name = "productId") int productId)
+    public ItemViewModel findProductByProductId(@PathVariable(name = "productId") int productId)
     {
         return null;
     }
 
     @GetMapping(value = "/product/invoice/{invoiceId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Product> getProductsByInvoiceId(@PathVariable(name = "invoiceId")int invoiceId)
+    public List<ItemViewModel> getProductsByInvoiceId(@PathVariable(name = "invoiceId")int invoiceId)
     {
         return null;
     }
 
     @GetMapping(value = "/product/inventory")
     @ResponseStatus(HttpStatus.OK)
-    public List<Product> getProductsByInventory()
+    public List<ItemViewModel> getProductsByInventory()
     {
         return null;
     }
 
+    @PutMapping(value = "/product/{productId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateProduct(@RequestBody @Valid ItemViewModel ivm, @PathVariable(name = "productId") int productId)
+    {
+
+    }
+
+    @DeleteMapping(value = "/product/{productId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void deleteProduct(@PathVariable(name = "productId") int productId)
+    {
+
+    }
+
+    @PostMapping(value = "/customer")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Customer createCustomer(@RequestBody @Valid Customer customer)
+    {
+        return null;
+    }
+
+    @GetMapping(value = "/customer")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Customer> getAllCustomers()
+    {
+        return null;
+    }
+
+    @GetMapping(value = "/customer/{customerId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Customer getCustomerByCustomerId(@PathVariable(name = "customerId") int customerId)
+    {
+        return null;
+    }
+
+    @PutMapping(value = "/customer/{customerId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateCustomer(@RequestBody @Valid Customer customer, @PathVariable(name = "customerId") int customerId)
+    {
+
+    }
+
+    @DeleteMapping(value = "/customer/{customerId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCustomer(@PathVariable(name = "customerId") int customerId)
+    {
+
+    }
 
 
 }
