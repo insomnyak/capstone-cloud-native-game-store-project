@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('build') {
+            steps {
+              sh '''
+                 cd ./customer-service
+                 ./mvnw -DskipTests clean compile
+              '''
+            }
+        }
+
+        stage('test') {
+            steps {
+              sh '''
+                 cd customer-service
+                     ./mvnw test
+              '''
+            }
+        }
+
+        stage('deliver') {
+            steps {
+              sh '''
+                 cd customer-service
+                     ./mvnw -DskipTests install
+              '''
+            }
+        }
+
+    }
+}
