@@ -13,7 +13,7 @@ public interface ProductServiceClient {
 
     @PostMapping
     public Product createProduct(@RequestBody @Valid Product product);
-    
+
     @GetMapping
     public List<Product> findAllProducts();
 
