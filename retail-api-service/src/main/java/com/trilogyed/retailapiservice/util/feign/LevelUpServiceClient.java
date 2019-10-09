@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
-@FeignClient(name = "U2-level-up-service")
+@FeignClient(name = "U2-LEVEL-UP-SERVICE")
 @RequestMapping("/levelUp")
 public interface LevelUpServiceClient {
 

@@ -22,13 +22,13 @@ public class RetailApiController {
         return null;
     }
 
-    @GetMapping("/product/{productId}")
+    @GetMapping("/products/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public ProductViewModel getProductByProductId(@PathVariable Integer productId) {
         return null;
     }
 
-    @GetMapping("/product/inventory")
+    @GetMapping("/products/inventory")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductViewModel> getAllProductsWithInventory() {
         return null;
