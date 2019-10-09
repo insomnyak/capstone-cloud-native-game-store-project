@@ -220,7 +220,7 @@ public class AdminAPIController {
 
     }
 
-    @GetMapping(value = "/allDone")
+    @GetMapping(value = "/logoutSuccess")
     @ResponseStatus(HttpStatus.OK)
     public String viewAllDone()
     {
