@@ -1,0 +1,30 @@
+package com.trilogyed.adminapi.util.feign;
+
+import com.trilogyed.adminapi.model.Product;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+@FeignClient(name = "product-service")
+@RequestMapping("/product")
+public interface ProductServiceClient {
+
+    @PostMapping
+    public Product createProduct(@RequestBody @Valid Product product);
+
+    @GetMapping
+    public List<Product> findAllProducts();
+
+    @GetMapping(value = "/{productId}")
+    public Product findProductByProductId(@PathVariable(name = "productId") int productId);
+
+
+    @PutMapping(value = "/{productId}")
+    public void updateProduct(@RequestBody @Valid Product product, @PathVariable(name = "productId") int productId);
+
+    @DeleteMapping(value = "/{productId}")
+    public void deleteProduct(@PathVariable(name = "productId") int productId);
+}
