@@ -48,7 +48,7 @@ public class ProductServiceController {
     public void updateProduct(@RequestBody @Valid Product product, @PathVariable(name = "productId") int productId)
     {
         if(product.getProductId()==0) product.setProductId(productId);
-        if(product.getProductId()!=productId) throw new NotFoundException("No post exist with this id");
+        if(product.getProductId()!=productId) throw new NotFoundException("No product exist with this id");
         dao.updateProduct(product);
     }
 
