@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@FeignClient(name = "product-service")
+@FeignClient(name = "U2-product-service")
 @RequestMapping("/product")
 public interface ProductServiceClient {
 
