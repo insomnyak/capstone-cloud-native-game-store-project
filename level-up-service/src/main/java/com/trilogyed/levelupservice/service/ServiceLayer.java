@@ -89,7 +89,7 @@ public class ServiceLayer {
     public void deleteByCustomerId(Integer customerId) {
         dao.deleteByCustomerId(customerId);
     }
-    
+
     // ******************
     // HELPER METHODS
     // ******************

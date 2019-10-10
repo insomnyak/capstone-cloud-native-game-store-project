@@ -8,7 +8,6 @@ import java.util.Objects;
 public class InvoiceItem {
     private Integer invoiceItemId;
 
-    @NotNull(message = "Please provide an invoiceId")
     private Integer invoiceId;
 
     @NotNull(message = "Please provide an inventoryId")
