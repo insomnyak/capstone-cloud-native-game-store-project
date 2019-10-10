@@ -94,6 +94,7 @@ public class ServiceLayer {
     // HELPER METHODS
     // ******************
 
+    @Transactional
     private LevelUp cleanLevelUp(Integer customerId, Integer newPoints) {
         if (newPoints == null) newPoints = 0;
 
