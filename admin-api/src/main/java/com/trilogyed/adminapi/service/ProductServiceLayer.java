@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -33,21 +34,12 @@ public class ProductServiceLayer {
         product.setListPrice(ivm.getListPrice());
         product.setListPrice(ivm.getUnitCost());
         product = productClient.createProduct(product);
-        if (ivm.getInventoryList().size()==0) {
-            Inventory inventory = new Inventory();
-            inventory.setProductId(product.getProductId());
-            inventory.setQuantity(0);
-            inventory = inventoryClient.createInventory(inventory);
-        }else
-        {
-            List<Inventory> ivmList = ivm.getInventoryList();
-            Product finalProduct = product;
-            ivmList.stream().forEach(inventory ->
-            {
-                inventory.setProductId(finalProduct.getProductId());
-                inventory = inventoryClient.createInventory(inventory);
-            });
-        }
+        /** Creating inventory */
+        Inventory inventory = new Inventory();
+        inventory.setProductId(product.getProductId());
+        if (ivm.getQuantityInInventory()==null) inventory.setQuantity(0);
+        else inventory.setQuantity(ivm.getQuantityInInventory());
+        inventory = inventoryClient.createInventory(inventory);
         return buildItemViewModel(product);
     }
 
@@ -96,13 +88,10 @@ public class ProductServiceLayer {
 
     public void updateInventory(ItemViewModel ivm)
     {
-        List<Inventory> updatedInventoryList = ivm.getInventoryList();
-        if (ivm.getInventoryList().size()!=0) {
-            updatedInventoryList.stream().forEach(inventory -> {
-                Inventory inventory1 = inventoryClient.findInventoryByInventoryId(inventory.getInventoryId());
-                inventory1.setQuantity(inventory.getQuantity());
-                inventoryClient.updateInventory(inventory);
-            });
+        if (ivm.getInventoryId()!=null) {
+            Inventory inventory = inventoryClient.findInventoryByInventoryId(ivm.getInventoryId());
+            inventory.setQuantity(ivm.getQuantityInInventory());
+            inventoryClient.updateInventory(inventory);
         }
     }
 
@@ -129,7 +118,27 @@ public class ProductServiceLayer {
         ivm.setProductDescription(product.getProductDescription());
         ivm.setListPrice(product.getListPrice());
         ivm.setUnitCost(product.getUnitCost());
-        ivm.setInventoryList(inventoryClient.findInventoriesByProductId(product.getProductId()));
+        List<Inventory> inventoryList = inventoryClient.findInventoriesByProductId(product.getProductId());
+        Inventory inventory = deleteExtraInventories(inventoryList);
+        ivm.setInventoryId(inventory.getInventoryId());
+        ivm.setQuantityInInventory(inventory.getQuantity());
         return ivm;
+    }
+
+    /** Deleting extra Inventories */
+    public Inventory deleteExtraInventories(List<Inventory> inventoryList)
+    {
+        Comparator<Inventory> maxId = Comparator.comparing(Inventory::getInventoryId);
+        Inventory maxIdInv = inventoryList.stream().max(maxId).get();
+        for (Inventory inventory: inventoryList)
+        {
+            if(inventory.getInventoryId()!=maxIdInv.getInventoryId())
+            {
+                maxIdInv.setQuantity(maxIdInv.getQuantity()+inventory.getQuantity());
+                inventoryClient.deleteInventory(inventory.getInventoryId());
+            }
+        }
+        inventoryClient.updateInventory(maxIdInv);
+        return maxIdInv;
     }
 }
