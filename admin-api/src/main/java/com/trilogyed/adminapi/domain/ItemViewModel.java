@@ -7,18 +7,18 @@ import java.util.List;
 import java.util.Objects;
 
 public class ItemViewModel {
-    private int productId;
+    private Integer productId;
     private String productName;
     private String productDescription;
     private BigDecimal listPrice;
     private BigDecimal unitCost;
     List<Inventory> inventoryList;
 
-    public int getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
@@ -67,7 +67,7 @@ public class ItemViewModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ItemViewModel that = (ItemViewModel) o;
-        return productId == that.productId &&
+        return Objects.equals(productId, that.productId) &&
                 Objects.equals(productName, that.productName) &&
                 Objects.equals(productDescription, that.productDescription) &&
                 Objects.equals(listPrice, that.listPrice) &&

@@ -3,7 +3,7 @@ package com.trilogyed.adminapi.model;
 import java.util.Objects;
 
 public class Customer {
-    private int customerId;
+    private Integer customerId;
     private String firstName;
     private String lastName;
     private String street;
@@ -12,11 +12,11 @@ public class Customer {
     private String email;
     private String phone;
 
-    public int getCustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 
@@ -81,7 +81,7 @@ public class Customer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return customerId == customer.customerId &&
+        return Objects.equals(customerId, customer.customerId) &&
                 Objects.equals(firstName, customer.firstName) &&
                 Objects.equals(lastName, customer.lastName) &&
                 Objects.equals(street, customer.street) &&

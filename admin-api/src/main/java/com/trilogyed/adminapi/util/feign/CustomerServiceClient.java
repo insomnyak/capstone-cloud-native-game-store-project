@@ -21,8 +21,8 @@ public interface CustomerServiceClient {
     @GetMapping(value = "/{customerId}")
     public Customer getCustomerByCustomerId(@PathVariable(name = "customerId") int customerId);
 
-    @PutMapping(value = "/{customerId}")
-    public void updateCustomer(@RequestBody @Valid Customer customer, @PathVariable(name = "customerId") int customerId);
+    @PutMapping
+    public void updateCustomer(@RequestBody @Valid Customer customer);
 
     @DeleteMapping(value = "/{customerId}")
     public void deleteCustomer(@PathVariable(name = "customerId") int customerId);

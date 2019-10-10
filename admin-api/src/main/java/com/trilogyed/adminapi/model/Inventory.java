@@ -3,31 +3,31 @@ package com.trilogyed.adminapi.model;
 import java.util.Objects;
 
 public class Inventory {
-    private int inventoryId;
-    private int productId;
-    private int quantity;
+    private Integer inventoryId;
+    private Integer productId;
+    private Integer quantity;
 
-    public int getInventoryId() {
+    public Integer getInventoryId() {
         return inventoryId;
     }
 
-    public void setInventoryId(int inventoryId) {
+    public void setInventoryId(Integer inventoryId) {
         this.inventoryId = inventoryId;
     }
 
-    public int getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
@@ -36,9 +36,9 @@ public class Inventory {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Inventory inventory = (Inventory) o;
-        return inventoryId == inventory.inventoryId &&
-                productId == inventory.productId &&
-                quantity == inventory.quantity;
+        return Objects.equals(inventoryId, inventory.inventoryId) &&
+                Objects.equals(productId, inventory.productId) &&
+                Objects.equals(quantity, inventory.quantity);
     }
 
     @Override

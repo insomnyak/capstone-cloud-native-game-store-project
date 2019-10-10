@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Product {
-    private int productId;
+    private Integer productId;
     private String productName;
     private String productDescription;
     private BigDecimal listPrice;
     private BigDecimal unitCost;
 
-    public int getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
@@ -55,7 +55,7 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return productId == product.productId &&
+        return Objects.equals(productId, product.productId) &&
                 Objects.equals(productName, product.productName) &&
                 Objects.equals(productDescription, product.productDescription) &&
                 Objects.equals(listPrice, product.listPrice) &&
