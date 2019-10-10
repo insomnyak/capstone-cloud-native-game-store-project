@@ -4,41 +4,41 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class InvoiceItem {
-    private int invoiceItemId;
-    private int invoiceId;
-    private int inventoryId;
-    private int quantity;
+    private Integer invoiceItemId;
+    private Integer invoiceId;
+    private Integer inventoryId;
+    private Integer quantity;
     private BigDecimal unitPrice;
 
-    public int getInvoiceItemId() {
+    public Integer getInvoiceItemId() {
         return invoiceItemId;
     }
 
-    public void setInvoiceItemId(int invoiceItemId) {
+    public void setInvoiceItemId(Integer invoiceItemId) {
         this.invoiceItemId = invoiceItemId;
     }
 
-    public int getInvoiceId() {
+    public Integer getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(int invoiceId) {
+    public void setInvoiceId(Integer invoiceId) {
         this.invoiceId = invoiceId;
     }
 
-    public int getInventoryId() {
+    public Integer getInventoryId() {
         return inventoryId;
     }
 
-    public void setInventoryId(int inventoryId) {
+    public void setInventoryId(Integer inventoryId) {
         this.inventoryId = inventoryId;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
@@ -55,10 +55,10 @@ public class InvoiceItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InvoiceItem that = (InvoiceItem) o;
-        return invoiceItemId == that.invoiceItemId &&
-                invoiceId == that.invoiceId &&
-                inventoryId == that.inventoryId &&
-                quantity == that.quantity &&
+        return Objects.equals(invoiceItemId, that.invoiceItemId) &&
+                Objects.equals(invoiceId, that.invoiceId) &&
+                Objects.equals(inventoryId, that.inventoryId) &&
+                Objects.equals(quantity, that.quantity) &&
                 Objects.equals(unitPrice, that.unitPrice);
     }
 

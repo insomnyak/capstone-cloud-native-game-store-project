@@ -4,23 +4,23 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Invoice {
-    private int invoiceId;
-    private int customerId;
+    private Integer invoiceId;
+    private Integer customerId;
     private LocalDate purchaseDate;
 
-    public int getInvoiceId() {
+    public Integer getInvoiceId() {
         return invoiceId;
     }
 
-    public void setInvoiceId(int invoiceId) {
+    public void setInvoiceId(Integer invoiceId) {
         this.invoiceId = invoiceId;
     }
 
-    public int getCustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 
@@ -37,8 +37,8 @@ public class Invoice {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Invoice invoice = (Invoice) o;
-        return invoiceId == invoice.invoiceId &&
-                customerId == invoice.customerId &&
+        return Objects.equals(invoiceId, invoice.invoiceId) &&
+                Objects.equals(customerId, invoice.customerId) &&
                 Objects.equals(purchaseDate, invoice.purchaseDate);
     }
 

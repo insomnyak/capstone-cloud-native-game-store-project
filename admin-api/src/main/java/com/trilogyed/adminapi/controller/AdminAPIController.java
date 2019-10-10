@@ -5,7 +5,6 @@ import com.trilogyed.adminapi.domain.ItemViewModel;
 import com.trilogyed.adminapi.model.Customer;
 import com.trilogyed.adminapi.model.Inventory;
 import com.trilogyed.adminapi.model.LevelUp;
-import com.trilogyed.adminapi.model.Product;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -33,28 +32,28 @@ public class AdminAPIController {
 
     @GetMapping(value = "/levelUp/{levelUpId}")
     @ResponseStatus(HttpStatus.OK)
-    public LevelUp findLevelUpByLevelUpId(@PathVariable(name = "levelUpId") int levelUpId)
+    public LevelUp findLevelUpByLevelUpId(@PathVariable(name = "levelUpId") Integer levelUpId)
     {
         return null;
     }
 
     @GetMapping(value = "/levelUp/customer/{customerId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<LevelUp> findAllLevelUpByCustomerId(@PathVariable(name = "customerId") int customerId)
+    public List<LevelUp> findAllLevelUpByCustomerId(@PathVariable(name = "customerId") Integer customerId)
     {
         return null;
     }
 
-    @PutMapping(value = "/levelUp/{levelUpId}")
+    @PutMapping(value = "/levelUp")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateLevelUp(@RequestBody @Valid LevelUp levelUp, @PathVariable(name = "levelUpId") int levelUpId)
+    public void updateLevelUp(@RequestBody @Valid LevelUp levelUp)
     {
 
     }
 
     @DeleteMapping(value = "/levelUp/{levelUpId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteLevelUp(@PathVariable(name = "levelUpId") int levelUpId)
+    public void deleteLevelUp(@PathVariable(name = "levelUpId") Integer levelUpId)
     {
 
     }
@@ -75,28 +74,28 @@ public class AdminAPIController {
 
     @GetMapping(value = "/invoice/{invoiceId}")
     @ResponseStatus(HttpStatus.OK)
-    public InvoiceViewModel getInvoiceByInvoiceId(@PathVariable(name = "invoiceId")int invoiceId)
+    public InvoiceViewModel getInvoiceByInvoiceId(@PathVariable(name = "invoiceId")Integer invoiceId)
     {
         return null;
     }
 
     @GetMapping(value = "/invoice/customer/{customerId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<InvoiceViewModel> getInvoicesByCustomerId(@PathVariable(name = "customerId") int customerId)
+    public List<InvoiceViewModel> getInvoicesByCustomerId(@PathVariable(name = "customerId") Integer customerId)
     {
         return null;
     }
 
-    @PutMapping(value = "/invoice/{invoiceId}")
+    @PutMapping(value = "/invoice")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateInvoice(@RequestBody @Valid InvoiceViewModel ivm,@PathVariable(name = "invoiceId") int invoiceId)
+    public void updateInvoice(@RequestBody @Valid InvoiceViewModel ivm)
     {
 
     }
 
     @DeleteMapping(value = "/invoice/{invoiceId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteInvoice(@PathVariable(name = "invoiceId") int invoiceId)
+    public void deleteInvoice(@PathVariable(name = "invoiceId") Integer invoiceId)
     {
 
     }
@@ -117,21 +116,21 @@ public class AdminAPIController {
 
     @GetMapping(value = "/inventory/{inventoryId}")
     @ResponseStatus(HttpStatus.OK)
-    public Inventory getInventoryByInventoryId(@PathVariable (name = "inventoryId") int inventoryId)
+    public Inventory getInventoryByInventoryId(@PathVariable (name = "inventoryId") Integer inventoryId)
     {
         return null;
     }
 
-    @PutMapping(value = "/inventory/{inventoryId}")
+    @PutMapping(value = "/inventory")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateInventory(@RequestBody @Valid Inventory inventory, @PathVariable(name = "inventoryId") int inventoryId)
+    public void updateInventory(@RequestBody @Valid Inventory inventory)
     {
 
     }
 
     @DeleteMapping(value = "/inventory/{inventoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteInventory(@PathVariable(name = "inventoryId") int inventoryId)
+    public void deleteInventory(@PathVariable(name = "inventoryId") Integer inventoryId)
     {
 
     }
@@ -152,14 +151,14 @@ public class AdminAPIController {
 
     @GetMapping(value = "/product/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemViewModel findProductByProductId(@PathVariable(name = "productId") int productId)
+    public ItemViewModel findProductByProductId(@PathVariable(name = "productId") Integer productId)
     {
         return null;
     }
 
     @GetMapping(value = "/product/invoice/{invoiceId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemViewModel> getProductsByInvoiceId(@PathVariable(name = "invoiceId")int invoiceId)
+    public List<ItemViewModel> getProductsByInvoiceId(@PathVariable(name = "invoiceId")Integer invoiceId)
     {
         return null;
     }
@@ -171,16 +170,16 @@ public class AdminAPIController {
         return null;
     }
 
-    @PutMapping(value = "/product/{productId}")
+    @PutMapping(value = "/product")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateProduct(@RequestBody @Valid ItemViewModel ivm, @PathVariable(name = "productId") int productId)
+    public void updateProduct(@RequestBody @Valid ItemViewModel ivm)
     {
 
     }
 
     @DeleteMapping(value = "/product/{productId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteProduct(@PathVariable(name = "productId") int productId)
+    public void deleteProduct(@PathVariable(name = "productId") Integer productId)
     {
 
     }
@@ -201,21 +200,21 @@ public class AdminAPIController {
 
     @GetMapping(value = "/customer/{customerId}")
     @ResponseStatus(HttpStatus.OK)
-    public Customer getCustomerByCustomerId(@PathVariable(name = "customerId") int customerId)
+    public Customer getCustomerByCustomerId(@PathVariable(name = "customerId") Integer customerId)
     {
         return null;
     }
 
-    @PutMapping(value = "/customer/{customerId}")
+    @PutMapping(value = "/customer")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateCustomer(@RequestBody @Valid Customer customer, @PathVariable(name = "customerId") int customerId)
+    public void updateCustomer(@RequestBody @Valid Customer customer)
     {
 
     }
 
     @DeleteMapping(value = "/customer/{customerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCustomer(@PathVariable(name = "customerId") int customerId)
+    public void deleteCustomer(@PathVariable(name = "customerId") Integer customerId)
     {
 
     }

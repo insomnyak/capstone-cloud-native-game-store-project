@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class CustomerViewModel {
-    private int customerId;
+    private Integer customerId;
     private String firstName;
     private String lastName;
     private String street;
@@ -12,15 +12,15 @@ public class CustomerViewModel {
     private String zip;
     private String email;
     private String phone;
-    private int levelUpId;
-    private int points;
+    private Integer levelUpId;
+    private Integer points;
     private LocalDate memberDate;
 
-    public int getCustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 
@@ -80,19 +80,19 @@ public class CustomerViewModel {
         this.phone = phone;
     }
 
-    public int getLevelUpId() {
+    public Integer getLevelUpId() {
         return levelUpId;
     }
 
-    public void setLevelUpId(int levelUpId) {
+    public void setLevelUpId(Integer levelUpId) {
         this.levelUpId = levelUpId;
     }
 
-    public int getPoints() {
+    public Integer getPoints() {
         return points;
     }
 
-    public void setPoints(int points) {
+    public void setPoints(Integer points) {
         this.points = points;
     }
 
@@ -109,9 +109,7 @@ public class CustomerViewModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CustomerViewModel that = (CustomerViewModel) o;
-        return customerId == that.customerId &&
-                levelUpId == that.levelUpId &&
-                points == that.points &&
+        return Objects.equals(customerId, that.customerId) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName) &&
                 Objects.equals(street, that.street) &&
@@ -119,6 +117,8 @@ public class CustomerViewModel {
                 Objects.equals(zip, that.zip) &&
                 Objects.equals(email, that.email) &&
                 Objects.equals(phone, that.phone) &&
+                Objects.equals(levelUpId, that.levelUpId) &&
+                Objects.equals(points, that.points) &&
                 Objects.equals(memberDate, that.memberDate);
     }
 

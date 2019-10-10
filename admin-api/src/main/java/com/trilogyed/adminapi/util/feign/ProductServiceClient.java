@@ -22,8 +22,8 @@ public interface ProductServiceClient {
     public Product findProductByProductId(@PathVariable(name = "productId") int productId);
 
 
-    @PutMapping(value = "/{productId}")
-    public void updateProduct(@RequestBody @Valid Product product, @PathVariable(name = "productId") int productId);
+    @PutMapping
+    public void updateProduct(@RequestBody @Valid Product product);
 
     @DeleteMapping(value = "/{productId}")
     public void deleteProduct(@PathVariable(name = "productId") int productId);
