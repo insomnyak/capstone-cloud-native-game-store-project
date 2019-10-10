@@ -1,4 +1,4 @@
 package com.trilogyed.retailapiservice.domain;
 
-public class InventoryViewModel {
+public class InventoryViewModel extends Inventory {
 }

@@ -1,4 +1,4 @@
 package com.trilogyed.retailapiservice.domain;
 
-public class ProductViewModel {
+public class ProductViewModel extends Product {
 }
