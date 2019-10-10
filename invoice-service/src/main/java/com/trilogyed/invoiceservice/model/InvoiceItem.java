@@ -4,18 +4,18 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class InvoiceItem {
-    private Integer invoiceItem;
+    private Integer invoiceItemId;
     private Integer invoiceId;
     private Integer inventoryId;
     private Integer quantity;
     private BigDecimal unitPrice;
 
-    public Integer getInvoiceItem() {
-        return invoiceItem;
+    public Integer getInvoiceItemId() {
+        return invoiceItemId;
     }
 
-    public void setInvoiceItem(Integer invoiceItem) {
-        this.invoiceItem = invoiceItem;
+    public void setInvoiceItemId(Integer invoiceItemId) {
+        this.invoiceItemId = invoiceItemId;
     }
 
     public Integer getInvoiceId() {
@@ -55,7 +55,7 @@ public class InvoiceItem {
         if (this == o) return true;
         if (!(o instanceof InvoiceItem)) return false;
         InvoiceItem that = (InvoiceItem) o;
-        return Objects.equals(getInvoiceItem(), that.getInvoiceItem()) &&
+        return Objects.equals(getInvoiceItemId(), that.getInvoiceItemId()) &&
                 Objects.equals(getInvoiceId(), that.getInvoiceId()) &&
                 Objects.equals(getInventoryId(), that.getInventoryId()) &&
                 Objects.equals(getQuantity(), that.getQuantity()) &&
@@ -64,6 +64,6 @@ public class InvoiceItem {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getInvoiceItem(), getInvoiceId(), getInventoryId(), getQuantity(), getUnitPrice());
+        return Objects.hash(getInvoiceItemId(), getInvoiceId(), getInventoryId(), getQuantity(), getUnitPrice());
     }
 }
