@@ -10,13 +10,13 @@ import java.util.List;
 @RestController
 public class RetailApiController {
 
-    @GetMapping("/inventory")
+    @GetMapping("/inventories")
     @ResponseStatus(HttpStatus.OK)
     public List<InventoryViewModel> getAllInventory() {
         return null;
     }
 
-    @GetMapping("/inventory/{inventoryId}")
+    @GetMapping("/inventories/{inventoryId}")
     @ResponseStatus(HttpStatus.OK)
     public InventoryViewModel getInventoryByInventoryId(@PathVariable Integer inventoryId) {
         return null;

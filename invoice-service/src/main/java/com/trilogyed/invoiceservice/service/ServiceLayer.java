@@ -72,6 +72,15 @@ public class ServiceLayer {
                 return !existsInDB;
             }).collect(Collectors.toList());
 
+            // filter provided updated list to get items that should be updated
+            List<InvoiceItem> invoiceItemsToUpdate = updatedInvoiceItems.stream().filter(invoiceItem -> {
+                boolean existsInInvoiceItemsToAdd = invoiceItemsToAdd.stream().anyMatch(itemToAdd ->
+                        itemToAdd.getInvoiceItemId() == invoiceItem.getInvoiceItemId());
+                boolean existsInInvoiceItemsToDelete = invoiceItemsToDelete.stream().anyMatch(itemToDelete ->
+                        itemToDelete.getInvoiceItemId() == invoiceItem.getInvoiceItemId());
+                return !existsInInvoiceItemsToAdd && !existsInInvoiceItemsToDelete;
+            }).collect(Collectors.toList());
+
             // delete
             for (InvoiceItem invoiceItem : invoiceItemsToDelete) {
                 invoiceItemDao.delete(invoiceItem.getInvoiceItemId());
@@ -82,6 +91,11 @@ public class ServiceLayer {
                 invoiceItem.setInvoiceId(invoiceId);
                 InvoiceItem invoiceItem1 = invoiceItemDao.add(invoiceItem);
                 invoiceItem.setInvoiceItemId(invoiceItem1.getInvoiceItemId());
+            }
+
+            // update
+            for (InvoiceItem invoiceItem : invoiceItemsToUpdate) {
+                invoiceItemDao.update(invoiceItem);
             }
         }
     }
