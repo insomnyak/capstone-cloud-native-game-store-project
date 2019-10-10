@@ -64,6 +64,12 @@
 			<artifactId>spring-rabbit-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.insomnyak</groupId>
+			<artifactId>im</artifactId>
+			<scope>compile</scope>
+			<version>1.0.9</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -77,6 +83,21 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<repositories>
+		<repository>
+			<id>im</id>
+			<name>im</name>
+			<url>http://raw.githubusercontent.com/insomnyak/im/master/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>
