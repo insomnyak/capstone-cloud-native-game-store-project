@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -23,13 +24,26 @@ public class ServiceLayer {
 
     @Transactional
     public LevelUp save(LevelUp levelUp) {
-        return dao.add(levelUp);
+        // check if customerId exists
+        // add levelUp points to existing entry
+        // if more than one customerId entry exists combined entries
+        Integer count = dao.countByCustomerId(levelUp.getCustomerId());
+        if (count > 1) {
+            return cleanLevelUp(levelUp.getCustomerId(), levelUp.getPoints());
+        } else if (count == 1) {
+            LevelUp existingLevelUp = dao.findByCustomerId(levelUp.getCustomerId()).get(0);
+            existingLevelUp.setPoints(existingLevelUp.getPoints() + levelUp.getPoints());
+            dao.update(existingLevelUp);
+            return existingLevelUp;
+        } else {
+            return dao.add(levelUp);
+        }
     }
 
     @Transactional
     public LevelUpViewModel save(LevelUpViewModel luvm) {
         LevelUp levelUp = build(luvm);
-        levelUp = dao.add(levelUp);
+        levelUp = save(levelUp);
 
         luvm.setLevelUpId(levelUp.getLevelUpId());
         return luvm;
@@ -76,11 +90,52 @@ public class ServiceLayer {
         dao.deleteByCustomerId(customerId);
     }
 
+    // ******************
+    // HELPER METHODS
+    // ******************
+
+    private LevelUp cleanLevelUp(Integer customerId, Integer newPoints) {
+        if (newPoints == null) newPoints = 0;
+
+        List<LevelUp> levelUps = dao.findByCustomerId(customerId);
+        if (levelUps.size() <= 1) return null;
+
+        LocalDate memberDate = dao.findEarliestCustomerMemberDate(customerId);
+
+        List<Integer> levelUpIdsToRemove = new ArrayList<>();
+        Integer totalPoints = 0;
+        Integer maxLevelUpId = null;
+        LevelUp newLevelUp = null;
+        for (LevelUp levelUp : levelUps) {
+            totalPoints += levelUp.getPoints();
+            if (maxLevelUpId == null) {
+                maxLevelUpId = levelUp.getLevelUpId();
+                newLevelUp = copy(levelUp);
+            } else {
+                levelUpIdsToRemove.add(levelUp.getLevelUpId());
+            }
+        }
+
+        // consolidate multiple LevelUps for customerId
+        newLevelUp.setPoints(totalPoints + newPoints);
+        newLevelUp.setMemberDate(memberDate);
+        dao.update(newLevelUp);
+
+        // delete duplicates
+        levelUpIdsToRemove.forEach(id -> dao.delete(id));
+
+        return newLevelUp;
+    }
+
     private LevelUp build(LevelUpViewModel levelUpViewModel) {
         return (new MapClasses<>(levelUpViewModel, LevelUp.class)).mapFirstToSecond(false);
     }
 
     private LevelUpViewModel build(LevelUp levelUp) {
         return (new MapClasses<>(levelUp, LevelUpViewModel.class)).mapFirstToSecond(false);
+    }
+
+    private LevelUp copy(LevelUp levelUp) {
+        return (new MapClasses<>(levelUp, LevelUp.class)).mapFirstToSecond(false);
     }
 }

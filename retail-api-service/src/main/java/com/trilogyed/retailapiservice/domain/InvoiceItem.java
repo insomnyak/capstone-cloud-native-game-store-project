@@ -1,4 +1,4 @@
-package com.trilogyed.invoiceservice.model;
+package com.trilogyed.retailapiservice.domain;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -6,8 +6,10 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class InvoiceItem {
+
     private Integer invoiceItemId;
 
+    @NotNull(message = "Please provide an invoiceId")
     private Integer invoiceId;
 
     @NotNull(message = "Please provide an inventoryId")
@@ -17,7 +19,6 @@ public class InvoiceItem {
     @Min(value = 0, message = "quantity must be >= 0")
     private Integer quantity;
 
-    @NotNull(message = "Please provide the item's unitPrice.")
     private BigDecimal unitPrice;
 
     public Integer getInvoiceItemId() {
