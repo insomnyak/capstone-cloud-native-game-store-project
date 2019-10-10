@@ -12,7 +12,8 @@ public class ItemViewModel {
     private String productDescription;
     private BigDecimal listPrice;
     private BigDecimal unitCost;
-    List<Inventory> inventoryList;
+    private Integer inventoryId;
+    private Integer quantityInInventory;
 
     public Integer getProductId() {
         return productId;
@@ -54,12 +55,20 @@ public class ItemViewModel {
         this.unitCost = unitCost;
     }
 
-    public List<Inventory> getInventoryList() {
-        return inventoryList;
+    public Integer getInventoryId() {
+        return inventoryId;
     }
 
-    public void setInventoryList(List<Inventory> inventoryList) {
-        this.inventoryList = inventoryList;
+    public void setInventoryId(Integer inventoryId) {
+        this.inventoryId = inventoryId;
+    }
+
+    public Integer getQuantityInInventory() {
+        return quantityInInventory;
+    }
+
+    public void setQuantityInInventory(Integer quantityInInventory) {
+        this.quantityInInventory = quantityInInventory;
     }
 
     @Override
@@ -72,11 +81,12 @@ public class ItemViewModel {
                 Objects.equals(productDescription, that.productDescription) &&
                 Objects.equals(listPrice, that.listPrice) &&
                 Objects.equals(unitCost, that.unitCost) &&
-                Objects.equals(inventoryList, that.inventoryList);
+                Objects.equals(inventoryId, that.inventoryId) &&
+                Objects.equals(quantityInInventory, that.quantityInInventory);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, productName, productDescription, listPrice, unitCost, inventoryList);
+        return Objects.hash(productId, productName, productDescription, listPrice, unitCost, inventoryId, quantityInInventory);
     }
 }
