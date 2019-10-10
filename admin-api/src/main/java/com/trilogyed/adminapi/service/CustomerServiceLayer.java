@@ -73,8 +73,15 @@ public class CustomerServiceLayer {
     }
 
     public void deleteCustomer(Integer customerId)
+
     {
+        levelUpClient.deleteLevelUpByCustomerId(customerId);
         customerClient.deleteCustomer(customerId);
+    }
+
+    public void deleteLevelUpByLevelUpId(Integer levelUpId)
+    {
+        levelUpClient.deleteByLevelUpId(levelUpId);
     }
 
     /** Helper Method - Building View Model */

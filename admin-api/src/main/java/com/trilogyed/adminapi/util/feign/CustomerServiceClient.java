@@ -19,11 +19,11 @@ public interface CustomerServiceClient {
     public List<Customer> getAllCustomers();
 
     @GetMapping(value = "/{customerId}")
-    public Customer getCustomerByCustomerId(@PathVariable(name = "customerId") int customerId);
+    public Customer getCustomerByCustomerId(@PathVariable(name = "customerId") Integer customerId);
 
     @PutMapping
     public void updateCustomer(@RequestBody @Valid Customer customer);
 
     @DeleteMapping(value = "/{customerId}")
-    public void deleteCustomer(@PathVariable(name = "customerId") int customerId);
+    public void deleteCustomer(@PathVariable(name = "customerId") Integer customerId);
 }

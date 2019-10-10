@@ -19,12 +19,12 @@ public interface ProductServiceClient {
     public List<Product> findAllProducts();
 
     @GetMapping(value = "/{productId}")
-    public Product findProductByProductId(@PathVariable(name = "productId") int productId);
+    public Product findProductByProductId(@PathVariable(name = "productId") Integer productId);
 
 
     @PutMapping
     public void updateProduct(@RequestBody @Valid Product product);
 
     @DeleteMapping(value = "/{productId}")
-    public void deleteProduct(@PathVariable(name = "productId") int productId);
+    public void deleteProduct(@PathVariable(name = "productId") Integer productId);
 }
