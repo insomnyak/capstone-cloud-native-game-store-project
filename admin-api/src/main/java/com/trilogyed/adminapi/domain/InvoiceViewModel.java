@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class InvoiceViewModel {
     private Integer invoiceId;
-    private CustomerViewModel customerViewModel;
+    private Integer customerId;
     private LocalDate purchaseDate;
     List<InvoiceItem> invoiceItemList;
 
@@ -20,12 +20,12 @@ public class InvoiceViewModel {
         this.invoiceId = invoiceId;
     }
 
-    public CustomerViewModel getCustomerViewModel() {
-        return customerViewModel;
+    public Integer getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerViewModel(CustomerViewModel customerViewModel) {
-        this.customerViewModel = customerViewModel;
+    public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
     }
 
     public LocalDate getPurchaseDate() {
@@ -50,13 +50,13 @@ public class InvoiceViewModel {
         if (o == null || getClass() != o.getClass()) return false;
         InvoiceViewModel that = (InvoiceViewModel) o;
         return Objects.equals(invoiceId, that.invoiceId) &&
-                Objects.equals(customerViewModel, that.customerViewModel) &&
+                Objects.equals(customerId, that.customerId) &&
                 Objects.equals(purchaseDate, that.purchaseDate) &&
                 Objects.equals(invoiceItemList, that.invoiceItemList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(invoiceId, customerViewModel, purchaseDate, invoiceItemList);
+        return Objects.hash(invoiceId, customerId, purchaseDate, invoiceItemList);
     }
 }
