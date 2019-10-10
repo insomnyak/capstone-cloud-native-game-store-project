@@ -34,31 +34,31 @@ public class RetailApiController {
         return null;
     }
 
-    @PostMapping("/customer")
+    @PostMapping("/customers")
     @ResponseStatus(HttpStatus.CREATED)
     public Customer createCustomer(@RequestBody @Valid Customer customer) {
         return null;
     }
 
-    @PutMapping("/customer")
+    @PutMapping("/customers")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateCustomer(@RequestBody @Valid Customer customer) {
 
     }
 
-    @GetMapping("/customer")
+    @GetMapping("/customers")
     @ResponseStatus(HttpStatus.OK)
     public List<CustomerViewModel> getAllCustomers() {
         return null;
     }
 
-    @GetMapping("/customer/{customerId}")
+    @GetMapping("/customers/{customerId}")
     @ResponseStatus(HttpStatus.OK)
     public CustomerViewModel getCustomerByCustomerId() {
         return null;
     }
 
-    @PostMapping("/invoice")
+    @PostMapping("/invoices")
     @ResponseStatus(HttpStatus.CREATED)
     public InvoiceViewModel createInvoice(@RequestBody @Valid InvoiceViewModel ivm) {
         return null;
