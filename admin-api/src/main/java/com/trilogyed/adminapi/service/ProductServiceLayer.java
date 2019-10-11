@@ -32,11 +32,11 @@ public class ProductServiceLayer {
         product.setProductName(ivm.getProductName());
         product.setProductDescription(ivm.getProductDescription());
         product.setListPrice(ivm.getListPrice());
-        product.setListPrice(ivm.getUnitCost());
+        product.setUnitCost(ivm.getUnitCost());
         product = productClient.createProduct(product);
         /** Creating inventory */
         Inventory inventory = new Inventory();
-        inventory.setProductId(product.getProductId());
+        inventory.setProductId(ivm.getProductId());
         if (ivm.getQuantityInInventory()==null) inventory.setQuantity(0);
         else inventory.setQuantity(ivm.getQuantityInInventory());
         inventory = inventoryClient.createInventory(inventory);
@@ -54,6 +54,7 @@ public class ProductServiceLayer {
     public ItemViewModel findItemByProductId(Integer productId)
     {
         Product product = productClient.findProductByProductId(productId);
+        if(product==null) return null;
         return buildItemViewModel(product);
     }
 
@@ -72,6 +73,7 @@ public class ProductServiceLayer {
     {
         Inventory inventory = inventoryClient.findInventoryByInventoryId(inventoryId);
         Product product = productClient.findProductByProductId(inventory.getProductId());
+        if (product==null) return null;
         return buildItemViewModel(product);
     }
 
@@ -98,20 +100,19 @@ public class ProductServiceLayer {
     public void deleteItem(Integer productId)
     {
         List<Inventory> invList = inventoryClient.findInventoriesByProductId(productId);
-        invList.stream().forEach(inventory -> {
-            inventoryClient.deleteInventory(inventory.getInventoryId());
-        });
+        if(invList!=null)
+        {
+            invList.stream().forEach(inventory -> {
+                inventoryClient.deleteInventory(inventory.getInventoryId());
+            });
+        }
         productClient.deleteProduct(productId);
-    }
-
-    public void deleteInventory(Integer inventoryId)
-    {
-        inventoryClient.deleteInventory(inventoryId);
     }
 
     /** Helper Method - building the ItemViewModel */
     public ItemViewModel buildItemViewModel(Product product)
     {
+        if (product==null) return null;
         ItemViewModel ivm = new ItemViewModel();
         ivm.setProductId(product.getProductId());
         ivm.setProductName(product.getProductName());
