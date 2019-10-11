@@ -1,5 +1,6 @@
 package com.trilogyed.adminapi.service;
 
+import com.trilogyed.adminapi.domain.CustomerViewModel;
 import com.trilogyed.adminapi.domain.InvoiceItemViewModel;
 import com.trilogyed.adminapi.domain.InvoiceViewModel;
 import com.trilogyed.adminapi.domain.TotalInvoiceViewModel;
@@ -95,6 +96,7 @@ public class InvoiceServiceLayer {
         });
         ivm.setInvoiceItemList(iiList);
         invoiceClient.updateInvoiceViewModel(ivm);
+        tvm = buildTotalInvoiceViewModel(ivm);
     }
 
     public void deleteInvoice(Integer invoiceId)
@@ -113,9 +115,9 @@ public class InvoiceServiceLayer {
     /** Helper Method - Building the TotalInvoiceViewModel */
     public TotalInvoiceViewModel buildTotalInvoiceViewModel(InvoiceViewModel ivm)
     {
+        if (ivm==null) return null;
         TotalInvoiceViewModel tivm = new TotalInvoiceViewModel();
         tivm.setInvoiceId(ivm.getInvoiceId());
-        tivm.setCustomerViewModel(csl.getCustomer(ivm.getCustomerId()));
         tivm.setPurchaseDate(ivm.getPurchaseDate());
         List<InvoiceItem>  invoiceItemList = ivm.getInvoiceItemList();
         List<InvoiceItemViewModel> iivmList = new ArrayList<>();
@@ -127,7 +129,25 @@ public class InvoiceServiceLayer {
         });
         tivm.setInvItemList(iivmList);
         tivm.setTotalCost(total[0]);
+        CustomerViewModel cvm = csl.getCustomer(ivm.getCustomerId());
+        cvm.setPoints(calculatePoints(total[0]));
+        csl.updateCustomer(cvm);
+        tivm.setCustomerViewModel(cvm);
         return tivm;
+    }
+
+    /** Calculate levelup points */
+    public Integer calculatePoints(BigDecimal totalCost)
+    {
+        Integer totalIntValue = totalCost.intValue();
+        Integer numberOfFifty=0;
+        while(totalIntValue>49)
+        {
+            totalIntValue -= 50;
+            numberOfFifty++;
+        }
+        Integer points = numberOfFifty*10;
+        return points;
     }
 
     /** Deleting extra Inventories */
@@ -149,6 +169,7 @@ public class InvoiceServiceLayer {
     /** Helper Method - Building the InvoiceItemViewModel */
     public InvoiceItemViewModel buildInvoiceItemViewModel(InvoiceItem invoiceItem)
     {
+        if (invoiceItem==null) return null;
         InvoiceItemViewModel iivm = new InvoiceItemViewModel();
         iivm.setInvoiceItemId(invoiceItem.getInvoiceItemId());
         iivm.setInvoiceId(invoiceItem.getInvoiceId());
