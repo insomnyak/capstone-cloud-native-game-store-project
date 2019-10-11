@@ -95,7 +95,7 @@ public class ServiceLayer {
     // ******************
 
     @Transactional
-    private LevelUp cleanLevelUp(Integer customerId, Integer newPoints) {
+    public LevelUp cleanLevelUp(Integer customerId, Integer newPoints) {
         if (newPoints == null) newPoints = 0;
 
         List<LevelUp> levelUps = dao.findByCustomerId(customerId);

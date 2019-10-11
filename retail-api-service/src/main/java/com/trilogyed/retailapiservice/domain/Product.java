@@ -1,13 +1,12 @@
 package com.trilogyed.retailapiservice.domain;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Product {
+    @NotNull
+    @Min(value = 1)
     private int productId;
 
     @NotBlank

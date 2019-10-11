@@ -15,13 +15,13 @@ import java.util.concurrent.TimeoutException;
 
 @Component
 public class ServiceLayerRabbitMqHelper {
-    protected static final String EXCHANGE = "level-up-exchange";
-    protected static final String ROUTING_KEY_ADD = "level-up.create.retail.service";
-    protected static final String ROUTING_KEY_UPDATE = "level-up.update.retail.service";
-    protected static final String ROUTING_KEY_DELETE_BY_LEVEL_UP_ID = "level-up.deleteByLevelUpId.retail.service";
-    protected static final String ROUTING_KEY_DELETE_BY_CUSTOMER_ID = "level-up.deleteByCustomerId.retail.service";
-    protected static final Long TIMEOUT = 8L;
-    protected static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
+    private static final String EXCHANGE = "level-up-exchange";
+    private static final String ROUTING_KEY_ADD = "level-up.create.retail.service";
+    private static final String ROUTING_KEY_UPDATE = "level-up.update.retail.service";
+    private static final String ROUTING_KEY_DELETE_BY_LEVEL_UP_ID = "level-up.deleteByLevelUpId.retail.service";
+    private static final String ROUTING_KEY_DELETE_BY_CUSTOMER_ID = "level-up.deleteByCustomerId.retail.service";
+    private static final Long TIMEOUT = 8L;
+    private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
 
     private RabbitTemplate rabbitTemplate;
     private AsyncRabbitTemplate asyncRabbitTemplate;
