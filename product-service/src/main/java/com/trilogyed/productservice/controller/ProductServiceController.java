@@ -1,12 +1,10 @@
 package com.trilogyed.productservice.controller;
 
-import com.trilogyed.productservice.dao.ProductDao;
 import com.trilogyed.productservice.exception.NotFoundException;
 import com.trilogyed.productservice.model.Product;
 import com.trilogyed.productservice.service.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +35,7 @@ public class ProductServiceController {
 
     @GetMapping(value = "/product/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public Product findProductByProductId(@PathVariable(name = "productId") int productId)
+    public Product findProductByProductId(@PathVariable Integer productId)
     {
         Product product = sl.findProduct(productId);
         if (product==null) throw new NotFoundException("No product exists with this id.");
@@ -46,16 +44,15 @@ public class ProductServiceController {
 
     @PutMapping(value = "/product")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateProduct(@RequestBody @Valid Product product, @PathVariable(name = "productId") int productId)
+    public void updateProduct(@RequestBody @Valid Product product)
     {
-        if(product.getProductId()==0) product.setProductId(productId);
-        if(product.getProductId()!=productId) throw new NotFoundException("No product exist with this id");
+        if(sl.findProduct(product.getProductId())==null) throw new NotFoundException("No product exist with this id");
         sl.updateProduct(product);
     }
 
     @DeleteMapping(value = "/product/{productId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void deleteProduct(@PathVariable(name = "productId") int productId)
+    public void deleteProduct(@PathVariable Integer productId)
     {
         if (sl.findProduct(productId)==null) throw new NotFoundException("Cannot find product with this id.");
         sl.deleteProduct(productId);

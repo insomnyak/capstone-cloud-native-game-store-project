@@ -4,6 +4,7 @@ package com.trilogyed.adminapi.controller;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
+import com.trilogyed.adminapi.exception.CannotCreateInvoice;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -198,6 +199,15 @@ public class ControllerExceptionHandler {
             NoHandlerFoundException e, WebRequest request) {
         VndErrors error = new VndErrors(request.toString(), e.getMessage());
         ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {CannotCreateInvoice.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<VndErrors> cannotCreateInvoiceException(
+            CannotCreateInvoice e, WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
         return responseEntity;
     }
 }

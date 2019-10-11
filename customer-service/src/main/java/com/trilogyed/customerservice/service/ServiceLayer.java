@@ -23,7 +23,7 @@ public class ServiceLayer {
         return dao.addCustomer(customer);
     }
 
-    public Customer findCustomer(int customerId)
+    public Customer findCustomer(Integer customerId)
     {
         return dao.getCustomerByCustomerId(customerId);
     }
@@ -38,7 +38,7 @@ public class ServiceLayer {
         dao.updateCustomer(customer);
     }
 
-    public void deleteCustomer(int customerId)
+    public void deleteCustomer(Integer customerId)
     {
         dao.deleteCustomer(customerId);
     }
