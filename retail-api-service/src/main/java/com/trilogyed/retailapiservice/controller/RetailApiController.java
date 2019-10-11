@@ -34,33 +34,35 @@ public class RetailApiController {
         return null;
     }
 
-    @PostMapping("/customers")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Customer createCustomer(@RequestBody @Valid Customer customer) {
-        return null;
-    }
+    // admin api only
+//    @PostMapping("/customers")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public Customer createCustomer(@RequestBody @Valid Customer customer) {
+//        return null;
+//    }
 
-    @PutMapping("/customers")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateCustomer(@RequestBody @Valid Customer customer) {
+    // admin api only
+//    @PutMapping("/customers")
+//    @ResponseStatus(HttpStatus.ACCEPTED)
+//    public void updateCustomer(@RequestBody @Valid Customer customer) {
+//
+//    }
 
-    }
-
-    @GetMapping("/customers")
+    @GetMapping("/customers/{customerId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<CustomerViewModel> getAllCustomers() {
+    public Customer getCustomer(@PathVariable Integer customerId) {
         return null;
     }
 
     @GetMapping("/customers/{customerId}")
     @ResponseStatus(HttpStatus.OK)
-    public CustomerViewModel getCustomerByCustomerId() {
+    public Customer getCustomerByCustomerId() {
         return null;
     }
 
-    @PostMapping("/invoices")
+    @PostMapping("/order")
     @ResponseStatus(HttpStatus.CREATED)
-    public InvoiceViewModel createInvoice(@RequestBody @Valid InvoiceViewModel ivm) {
+    public OrderViewModel createInvoice(@RequestBody @Valid OrderViewModel ovm) {
         return null;
     }
 }

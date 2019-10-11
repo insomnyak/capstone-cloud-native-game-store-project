@@ -76,4 +76,10 @@ public class LevelUpController {
     public void deleteLevelUpByCustomerId(@PathVariable Integer customerId) {
         sl.deleteByCustomerId(customerId);
     }
+
+    @PutMapping("/customer/{customerId}/consolidate")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public LevelUp consolidateLevelUpsByCustomerId(@PathVariable Integer customerId) {
+        return sl.cleanLevelUp(customerId, null);
+    }
 }

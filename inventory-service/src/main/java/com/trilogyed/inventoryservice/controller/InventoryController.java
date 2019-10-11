@@ -63,4 +63,10 @@ public class InventoryController {
     public Integer countInventoriesByProductId(@PathVariable Integer productId) {
         return sl.countByProductId(productId);
     }
+
+    @PutMapping("/product/{productId}/consolidation")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Inventory consolidateInventoryByProductId(@PathVariable Integer productId) {
+        return sl.cleanInventory(productId, null);
+    }
 }

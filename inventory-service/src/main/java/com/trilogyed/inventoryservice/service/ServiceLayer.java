@@ -67,7 +67,7 @@ public class ServiceLayer {
     }
 
     @Transactional
-    private Inventory cleanInventory(Integer productId, Integer quantity) {
+    public Inventory cleanInventory(Integer productId, Integer quantity) {
         if (quantity == null) quantity = 0;
 
         List<Inventory> inventories = dao.findByProductId(productId);

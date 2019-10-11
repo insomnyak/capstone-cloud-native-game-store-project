@@ -42,4 +42,7 @@ public interface LevelUpServiceClient {
 
     @DeleteMapping("/customer/{customerId}")
     public void deleteLevelUpByCustomerId(@PathVariable Integer customerId);
+
+    @PutMapping("/customer/{customerId}/consolidate")
+    public LevelUp consolidateLevelUpsByCustomerId(@PathVariable Integer customerId);
 }

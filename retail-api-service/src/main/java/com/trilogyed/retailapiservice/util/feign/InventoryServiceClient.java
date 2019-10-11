@@ -42,4 +42,7 @@ public interface InventoryServiceClient {
     @GetMapping("/product/{productId}/count")
     @ResponseStatus(HttpStatus.OK)
     public Integer countInventoriesByProductId(@PathVariable Integer productId);
+
+    @PutMapping("/product/{productId}/consolidation")
+    public Inventory consolidateInventoryByProductId(@PathVariable Integer productId);
 }

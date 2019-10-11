@@ -1,23 +1,25 @@
-package com.trilogyed.invoiceservice.model;
+package com.trilogyed.retailapiservice.domain;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class InvoiceItem {
+public class InvoiceItemViewModel {
+
     private Integer invoiceItemId;
-
     private Integer invoiceId;
-
-    @NotNull(message = "Please provide an inventoryId")
     private Integer inventoryId;
+
+    @Valid
+    @NotNull(message = "Please provide the product.")
+    private Product product;
 
     @NotNull(message = "Please provide the quantity")
     @Min(value = 1, message = "quantity must be >= 1")
     private Integer quantity;
 
-    @NotNull(message = "Please provide the item's unitPrice.")
     private BigDecimal unitPrice;
 
     public Integer getInvoiceItemId() {
@@ -44,6 +46,14 @@ public class InvoiceItem {
         this.inventoryId = inventoryId;
     }
 
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
     public Integer getQuantity() {
         return quantity;
     }
@@ -63,17 +73,20 @@ public class InvoiceItem {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof InvoiceItem)) return false;
-        InvoiceItem that = (InvoiceItem) o;
+        if (!(o instanceof InvoiceItemViewModel)) return false;
+        InvoiceItemViewModel that = (InvoiceItemViewModel) o;
         return Objects.equals(getInvoiceItemId(), that.getInvoiceItemId()) &&
                 Objects.equals(getInvoiceId(), that.getInvoiceId()) &&
                 Objects.equals(getInventoryId(), that.getInventoryId()) &&
+                Objects.equals(getProduct(), that.getProduct()) &&
                 Objects.equals(getQuantity(), that.getQuantity()) &&
                 Objects.equals(getUnitPrice(), that.getUnitPrice());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getInvoiceItemId(), getInvoiceId(), getInventoryId(), getQuantity(), getUnitPrice());
+        return Objects
+                .hash(getInvoiceItemId(), getInvoiceId(), getInventoryId(), getProduct(), getQuantity(),
+                        getUnitPrice());
     }
 }

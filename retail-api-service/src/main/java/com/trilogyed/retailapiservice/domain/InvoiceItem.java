@@ -16,7 +16,7 @@ public class InvoiceItem {
     private Integer inventoryId;
 
     @NotNull(message = "Please provide the quantity")
-    @Min(value = 0, message = "quantity must be >= 0")
+    @Min(value = 1, message = "quantity must be >= 1")
     private Integer quantity;
 
     private BigDecimal unitPrice;

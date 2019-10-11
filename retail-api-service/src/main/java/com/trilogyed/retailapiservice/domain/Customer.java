@@ -1,31 +1,51 @@
 package com.trilogyed.retailapiservice.domain;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import com.insomnyak.util.regex.EmailRx;
+
+import javax.validation.constraints.*;
 import java.util.Objects;
 
 public class Customer {
 
+    @NotNull(message = "Please provide the customerId. " +
+            "If you do not have a customerId, please reach out to your Admin Professional " +
+            "so they can create one for you.")
+    @Min(value = 1)
     private int customerId;
-    @NotBlank
+
+    @NotBlank(message = "Please provide your first name. " +
+            "This must match the entry in the system. Use /customers/{customerId} for exact values used.")
     @Size(max=50)
     private String firstName;
-    @NotBlank
+
+    @NotBlank(message = "Please provide your last name. " +
+            "This must match the entry in the system. Use /customers/{customerId} for exact values used.")
     @Size(max=50)
     private String lastName;
-    @NotBlank
+
+    @NotBlank(message = "Please provide your street. " +
+            "This must match the entry in the system. Use /customers/{customerId} for exact values used.")
     @Size(max=50)
     private String street;
-    @NotBlank
+
+    @NotBlank(message = "Please provide your city. " +
+            "This must match the entry in the system. Use /customers/{customerId} for exact values used.")
     @Size(max=50)
     private String city;
-    @NotBlank
+
+    @NotBlank(message = "Please provide your zip. " +
+            "This must match the entry in the system. Use /customers/{customerId} for exact values used.")
     @Size(max=10)
     private String zip;
-    @NotBlank
+
+    @NotBlank(message = "Please provide your email. " +
+            "This must match the entry in the system. Use /customers/{customerId} for exact values used.")
     @Size(max=75)
+    @Pattern(regexp = EmailRx.emailStr, message = "Must provide a valid email. i.e. john.doe@random.com")
     private String email;
-    @NotBlank
+
+    @NotBlank(message = "Please provide your phone number. " +
+            "This must match the entry in the system. Use /customers/{customerId} for exact values used.")
     @Size(max=20)
     private String phone;
 
@@ -113,5 +133,19 @@ public class Customer {
         return Objects
                 .hash(getCustomerId(), getFirstName(), getLastName(), getStreet(), getCity(), getZip(), getEmail(),
                         getPhone());
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerId=" + customerId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", zip='" + zip + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
     }
 }
