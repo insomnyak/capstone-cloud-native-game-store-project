@@ -101,24 +101,31 @@ public class CustomerServiceLayerMocks {
         levelUpList.add(savedLevelUp);
         levelUpList.add(anotherLevelUp);
 
-        List<LevelUp> levelUpListByCustomerId = new ArrayList<>();
-        levelUpListByCustomerId.add(savedLevelUp);
+        List<LevelUp> levelUpListByCustomerId1 = new ArrayList<>();
+        levelUpListByCustomerId1.add(savedLevelUp);
+
+        List<LevelUp> levelUpListByCustomerId2 = new ArrayList<>();
+        levelUpListByCustomerId2.add(anotherLevelUp);
 
         LevelUp updateLevelUp = new LevelUp();
         updateLevelUp.setLevelUpId(1030);
         updateLevelUp.setCustomerId(30);
-        updateLevelUp.setPoints(0);
+        updateLevelUp.setPoints(100);
         updateLevelUp.setMemberDate(LocalDate.now());
+
+        List<LevelUp> levelUpListByUpdatedCustomerId = new ArrayList<>();
+        levelUpListByUpdatedCustomerId.add(updateLevelUp);
 
         LevelUp deleteLevelUp = new LevelUp();
         deleteLevelUp.setLevelUpId(1040);
         deleteLevelUp.setCustomerId(40);
-        deleteLevelUp.setPoints(0);
+        deleteLevelUp.setPoints(40);
         deleteLevelUp.setMemberDate(LocalDate.now());
 
         doReturn(savedCustomer).when(customerClient).createCustomer(customer);
         doReturn(savedCustomer).when(customerClient).getCustomerByCustomerId(10);
         doReturn(customerList).when(customerClient).getAllCustomers();
+        doReturn(anotherCustomer).when(customerClient).getCustomerByCustomerId(20);
         doNothing().when(customerClient).updateCustomer(updateCustomer);
         doReturn(updateCustomer).when(customerClient).getCustomerByCustomerId(30);
         doNothing().when(customerClient).deleteCustomer(40);
@@ -127,19 +134,40 @@ public class CustomerServiceLayerMocks {
         doReturn(savedLevelUp).when(levelUpClient).createLevelUp(levelUp);
         doReturn(savedLevelUp).when(levelUpClient).findByLevelUpId(1010);
         doReturn(levelUpList).when(levelUpClient).findAllLevelUps();
-        doReturn(levelUpListByCustomerId).when(levelUpClient).findLevelUpsByCustomerId(10);
+        doReturn(levelUpListByCustomerId1).when(levelUpClient).findLevelUpsByCustomerId(10);
+        doReturn(levelUpListByCustomerId2).when(levelUpClient).findLevelUpsByCustomerId(20);
         doNothing().when(levelUpClient).updateLevelUp(updateLevelUp);
-        doReturn(updateLevelUp).when(levelUpClient).findByLevelUpId(1030);
+        doReturn(levelUpListByUpdatedCustomerId).when(levelUpClient).findLevelUpsByCustomerId(30);
+        doNothing().when(levelUpClient).deleteLevelUpByCustomerId(40);
+        doReturn(null).when(levelUpClient).findLevelUpsByCustomerId(40);
         doNothing().when(levelUpClient).deleteByLevelUpId(40);
         doReturn(null).when(levelUpClient).findByLevelUpId(1040);
 
         sl = new CustomerServiceLayer(customerClient,levelUpClient);
 
+        /** Tests for creating a new Customer with LevelUp */
         CustomerViewModel addingCustomer = sl.createCustomer(customer);
-
         CustomerViewModel fetchCustomerAdded = sl.getCustomer(addingCustomer.getCustomerId());
-
         assertEquals(addingCustomer,fetchCustomerAdded);
+
+        /** Tests to get all customers lists */
+        List<CustomerViewModel> cvmList = sl.getAllCustomers();
+        assertEquals(cvmList.size(),2);
+
+        /** Tests to update Customer/LevelUp */
+        CustomerViewModel getCustomerVM = sl.getCustomer(30);
+        sl.updateCustomer(getCustomerVM);
+        CustomerViewModel fetchUpdatedCustomer = sl.getCustomer(getCustomerVM.getCustomerId());
+        assertEquals(getCustomerVM,fetchUpdatedCustomer);
+
+        /** Tests to delete Customer */
+        sl.deleteCustomer(40);
+        CustomerViewModel cvmDeleted = sl.getCustomer(40);
+        assertNull(cvmDeleted);
+
+        /** Tests to delete LevelUp */
+        sl.deleteLevelUpByLevelUpId(1040);
+        assertNull(levelUpClient.findByLevelUpId(1040));
 
     }
 }
