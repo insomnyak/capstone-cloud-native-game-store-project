@@ -2,7 +2,6 @@ package com.trilogyed.adminapi.util.feign;
 
 import com.trilogyed.adminapi.model.Product;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

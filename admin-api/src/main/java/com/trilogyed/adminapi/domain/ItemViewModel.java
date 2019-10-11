@@ -1,9 +1,7 @@
 package com.trilogyed.adminapi.domain;
 
-import com.trilogyed.adminapi.model.Inventory;
-
 import java.math.BigDecimal;
-import java.util.List;
+
 import java.util.Objects;
 
 public class ItemViewModel {
