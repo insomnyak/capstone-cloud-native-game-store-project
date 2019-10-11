@@ -18,52 +18,37 @@ public class RetailApiController {
     @GetMapping("/inventories")
     @ResponseStatus(HttpStatus.OK)
     public List<InventoryViewModel> getAllInventory() {
-        return null;
+        return sl.fetchAllInventories();
     }
 
     @GetMapping("/inventories/{inventoryId}")
     @ResponseStatus(HttpStatus.OK)
     public InventoryViewModel getInventoryByInventoryId(@PathVariable Integer inventoryId) {
-        return null;
+        return sl.fetchInventoryByInventoryId(inventoryId);
     }
 
     @GetMapping("/products/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public ProductViewModel getProductByProductId(@PathVariable Integer productId) {
-        return null;
+        return sl.fetchProductByProductId(productId);
     }
 
     @GetMapping("/products/inventory")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductViewModel> getAllProductsWithInventory() {
-        return null;
+        return sl.fetchAllProductsWithInventory();
     }
-
-    // admin api only
-//    @PostMapping("/customers")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public Customer createCustomer(@RequestBody @Valid Customer customer) {
-//        return null;
-//    }
-
-    // admin api only
-//    @PutMapping("/customers")
-//    @ResponseStatus(HttpStatus.ACCEPTED)
-//    public void updateCustomer(@RequestBody @Valid Customer customer) {
-//
-//    }
-
-    // admin api only
-//    @GetMapping("/customers")
-//    @ResponseStatus(HttpStatus.OK)
-//    public List<Customer> getAllCustomers() {
-//        return null;
-//    }
 
     @GetMapping("/customers/{customerId}")
     @ResponseStatus(HttpStatus.OK)
     public Customer getCustomerByCustomerId(@PathVariable Integer customerId) {
-        return null;
+        return sl.fetchCustomer(customerId);
+    }
+
+    @GetMapping("/customers/{customerId}/invoices")
+    @ResponseStatus(HttpStatus.OK)
+    public CustomerViewModel getCustomerInvoices(@PathVariable Integer customerId) {
+        return sl.fetchCustomerViewModel(customerId);
     }
 
     @PostMapping("/order")

@@ -9,34 +9,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class OrderViewModel {
-        /*
-        Receive:
-            OrderViewModel:
-                Customer
-                List<InvoiceItems>
-                    - Product
-                    - quantity
-
-        Response:
-            OrderViewModel:
-                awardedPoints
-                LevelUp
-                    - levelUpId
-                    - customerId
-                    - points
-                    - memberDate
-                Customer
-                invoiceId
-                purchaseDate
-                List<InvoiceItemViewModel>
-                    - invoiceItemId
-                    - invoiceId
-                    - inventoryId
-                    - Product
-                    - quantity
-                orderTotal
-         */
-
         @Valid
         @NotNull(message = "Must provide the customer details.")
         private Customer customer;

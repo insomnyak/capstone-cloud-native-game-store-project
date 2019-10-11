@@ -3,10 +3,7 @@ package com.trilogyed.retailapiservice.service;
 import com.insomnyak.util.MapClasses;
 import com.trilogyed.queue.shared.viewmodel.LevelUpViewModel;
 import com.trilogyed.retailapiservice.domain.*;
-import com.trilogyed.retailapiservice.exception.EmptyInventoryException;
-import com.trilogyed.retailapiservice.exception.InvalidCustomerException;
-import com.trilogyed.retailapiservice.exception.InvalidItemQuantityException;
-import com.trilogyed.retailapiservice.exception.TupleNotFoundException;
+import com.trilogyed.retailapiservice.exception.*;
 import com.trilogyed.retailapiservice.util.feign.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -19,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Component @Primary
@@ -82,7 +80,6 @@ public class ServiceLayer {
                 2. product is valid
                 3. customer is valid
          */
-        //"This must match the entry in the system. Use /customers/{customerId} for exact values used."
 
         // CHECK: customer is valid
         int customerId = ovm.getCustomer().getCustomerId();
@@ -186,8 +183,7 @@ public class ServiceLayer {
         ovm.setInvoiceId(ivm.getInvoiceId());
 
         // determine LevelUp points
-        Integer awardedPoints = Integer.parseInt(
-                orderTotal.divide(new BigDecimal("50"), RoundingMode.FLOOR).toBigInteger().toString());
+        Integer awardedPoints = calculateAwardedPoints(orderTotal);
         ovm.setAwardedPoints(awardedPoints);
 
         // update levelUp
@@ -217,5 +213,188 @@ public class ServiceLayer {
         return ovm;
     }
 
+    public List<InventoryViewModel> fetchAllInventories() {
+        List<InventoryViewModel> ivmList = new ArrayList<>();
 
+        List<Inventory> inventoryList = inventoryClient.findAllInventories();
+        for (Inventory inventory : inventoryList) {
+            InventoryViewModel ivm = build(inventory, false);
+            if (ivm != null) ivmList.add(ivm);
+        }
+
+        return ivmList;
+    }
+
+    public InventoryViewModel fetchInventoryByInventoryId(Integer inventoryId) {
+        Inventory inventory = inventoryClient.findInventoryByInventoryId(inventoryId);
+        if (inventory == null) {
+            throw new TupleNotFoundException("Inventory not found for inventoryId " + inventoryId);
+        }
+        InventoryViewModel ivm = build(inventory, false);
+        if (ivm == null) throw new TupleNotFoundException("Inventory not found for inventoryId " + inventoryId);
+
+        return ivm;
+    }
+
+    public ProductViewModel fetchProductByProductId(Integer productId) {
+        Product product = productClient.findProductByProductId(productId);
+        if (product == null) {
+            throw new TupleNotFoundException("Product not found for productId " + productId);
+        }
+
+        ProductViewModel pvm =  build(product, true);
+
+        if (pvm == null) {
+            throw new ProductUnavailableException("This product has now available inventory.");
+        }
+
+        return pvm;
+    }
+
+    public List<ProductViewModel> fetchAllProductsWithInventory() {
+        List<Product> productList = productClient.findAllProducts();
+        List<ProductViewModel> pvmList = new ArrayList<>();
+
+        for (Product product : productList) {
+            ProductViewModel pvm = build(product, true);
+            if (pvm == null) continue;
+            pvmList.add(pvm);
+        }
+
+        if (pvmList.size() == 0) {
+            throw new EmptyInventoryException("There are no products with available inventory.");
+        }
+
+        return pvmList;
+    }
+
+    public Customer fetchCustomer(Integer customerId) {
+        Customer customer = customerClient.getCustomerByCustomerId(customerId);
+        if (customer == null) {
+            throw new TupleNotFoundException(String.format("customerId %d not found. " +
+                    "Please contact an Admin Professional to create a valid customer profile.", customerId));
+        }
+        return customer;
+    }
+
+    public CustomerViewModel fetchCustomerViewModel(Integer customerId) {
+        Customer customer = fetchCustomer(customerId);
+        return build(customer, true);
+    }
+
+    /* ******************
+        HELPER METHODS
+     ****************** */
+
+    private InventoryViewModel build(Inventory inventory, boolean ignoreNonNullsInSecond) {
+        Product product = productClient.findProductByProductId(inventory.getProductId());
+        if (product == null) {
+            inventoryClient.deleteInventory(inventory.getInventoryId());
+            return null;
+        } else {
+            InventoryViewModel ivm = (new MapClasses<>(inventory, InventoryViewModel.class))
+                    .mapFirstToSecond(false, ignoreNonNullsInSecond);
+            ivm.setProduct(product);
+            return ivm;
+        }
+    }
+
+    private ProductViewModel build(Product product, boolean ignoreNonNullsInSecond) {
+        ProductViewModel pvm =  (new MapClasses<>(product, ProductViewModel.class))
+                .mapFirstToSecond(false, ignoreNonNullsInSecond);
+        //pvm.setInventory(inventoryClient.findInventoriesByProductId(product.getProductId()));
+        Inventory inventory = fetchInventoryByProductId(product.getProductId());
+        if (inventory == null || inventory.getQuantity() == 0) {
+            return null;
+        }
+        (new MapClasses<>(inventory, pvm)).mapFirstToSecond(false, ignoreNonNullsInSecond);
+        return pvm;
+    }
+
+    private Inventory fetchInventoryByProductId(Integer productId) {
+        List<Inventory> inventoryList = inventoryClient.findInventoriesByProductId(productId);
+        Inventory inventory;
+        if (inventoryList.size() > 1) {
+            inventory = inventoryClient.consolidateInventoryByProductId(productId);
+        } else if (inventoryList.size() == 1) {
+            inventory = inventoryList.get(0);
+        } else {
+            inventory = null;
+        }
+
+        return inventory;
+    }
+
+    private CustomerViewModel build(Customer customer, boolean ignoreNonNullsInSecond) {
+        CustomerViewModel cvm = (new MapClasses<>(customer, CustomerViewModel.class))
+                .mapFirstToSecond(false, ignoreNonNullsInSecond);
+
+        LevelUp levelUp = fetchLevelUpByCustomerId(customer.getCustomerId());
+        cvm.setLevelUp(levelUp);
+
+        List<OrderViewModel> ovmList = new ArrayList<>();
+
+        List<InvoiceViewModel> invoiceViewModelList =
+                invoiceClient.findInvoiceViewModelsByCustomerId(customer.getCustomerId());
+
+        for (InvoiceViewModel ivm : invoiceViewModelList) {
+            OrderViewModel ovm = build(customer, ivm);
+            ovmList.add(ovm);
+        }
+
+        cvm.setOrders(ovmList);
+
+        return cvm;
+    }
+
+    private LevelUp fetchLevelUpByCustomerId(Integer customerId) {
+        List<LevelUp> levelUpList = levelUpClient.findLevelUpsByCustomerId(customerId);
+        LevelUp levelUp;
+        if (levelUpList.size() > 1) {
+            levelUp = levelUpClient.consolidateLevelUpsByCustomerId(customerId);
+        } else if (levelUpList.size() == 0) {
+            levelUp = null;
+        } else {
+            levelUp = levelUpList.get(0);
+        }
+        return levelUp;
+    }
+
+    private OrderViewModel build(Customer customer, InvoiceViewModel ivm) {
+        OrderViewModel ovm = (new MapClasses<>(ivm, OrderViewModel.class)).mapFirstToSecond(true);
+        ovm.setCustomer(customer);
+
+        LevelUp levelUp = fetchLevelUpByCustomerId(customer.getCustomerId());
+
+        List<InvoiceItem> invoiceItemList = ivm.getInvoiceItems();
+        List<InvoiceItemViewModel> invoiceItemViewModelList = new ArrayList<>();
+
+        // orderTotal
+        final BigDecimal[] orderTotal = {new BigDecimal("0.00").setScale(2, RoundingMode.HALF_UP)};
+        invoiceItemList.stream().forEach(ii -> {
+            orderTotal[0] = orderTotal[0].add(ii.getUnitPrice().multiply(new BigDecimal(ii.getQuantity())));
+        });
+        ovm.setOrderTotal(orderTotal[0]);
+
+        // points awarded
+        ovm.setAwardedPoints(calculateAwardedPoints(orderTotal[0]));
+
+
+        // invoiceItems
+        for (InvoiceItem ii : invoiceItemList) {
+            InvoiceItemViewModel iivm = (new MapClasses<>(ii, InvoiceItemViewModel.class)).mapFirstToSecond(false);
+            Inventory inventory = inventoryClient.findInventoryByInventoryId(ii.getInventoryId());
+            iivm.setProduct(productClient.findProductByProductId(inventory.getProductId()));
+            invoiceItemViewModelList.add(iivm);
+        }
+
+        ovm.setInvoiceItems(invoiceItemViewModelList);
+
+        return ovm;
+    }
+
+    private Integer calculateAwardedPoints(BigDecimal orderTotal) {
+        return Integer.parseInt(
+                orderTotal.divide(new BigDecimal("50"), RoundingMode.FLOOR).toBigInteger().toString());
+    }
 }
