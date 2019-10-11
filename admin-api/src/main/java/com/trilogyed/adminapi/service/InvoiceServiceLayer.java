@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -37,12 +36,78 @@ public class InvoiceServiceLayer {
     public TotalInvoiceViewModel createInvoice(InvoiceViewModel ivm)
     {
         List<InvoiceItem> iiList = ivm.getInvoiceItemList();
+        List<InvoiceItem> outOfStockItems = new ArrayList<>();
         iiList.stream().forEach(invoiceItem -> {
             Inventory inventory = inventoryClient.findInventoryByInventoryId(invoiceItem.getInventoryId());
-            if(invoiceItem.getQuantity()>inventory.getQuantity()) throw new CannotCreateInvoice("We do not have enough stock for this item in our inventory.");
+            if(invoiceItem.getQuantity()>inventory.getQuantity()) outOfStockItems.add(invoiceItem);
         });
-        ivm = invoiceClient.saveInvoiceViewModel(ivm);
+        if (isQuantityInStock(outOfStockItems)==false) throw new CannotCreateInvoice(String.format("These Items are out of stock - (%s)", outOfStockItems));
+        else ivm = invoiceClient.saveInvoiceViewModel(ivm);
         return buildTotalInvoiceViewModel(ivm);
+    }
+
+    public TotalInvoiceViewModel getInvoice(Integer invoiceId)
+    {
+        InvoiceViewModel ivm = invoiceClient.findInvoiceViewModelByInvoiceId(invoiceId);
+        return buildTotalInvoiceViewModel(ivm);
+    }
+
+    public List<TotalInvoiceViewModel> getAllInvoices()
+    {
+        List<InvoiceViewModel> ivmList = invoiceClient.findAllInvoiceViewModels();
+        List<TotalInvoiceViewModel> tivmList = new ArrayList<>();
+        ivmList.stream().forEach(invoiceViewModel ->{
+            TotalInvoiceViewModel tvm = buildTotalInvoiceViewModel(invoiceViewModel);
+            tivmList.add(tvm);
+        });
+        return tivmList;
+    }
+
+    public List<TotalInvoiceViewModel> getInvoicesByCustomerId(Integer customerId)
+    {
+        List<InvoiceViewModel> ivmList = invoiceClient.findInvoiceViewModelsByCustomerId(customerId);
+        List<TotalInvoiceViewModel> tivmList = new ArrayList<>();
+        ivmList.stream().forEach(invoiceViewModel ->{
+            TotalInvoiceViewModel tvm = buildTotalInvoiceViewModel(invoiceViewModel);
+            tivmList.add(tvm);
+        });
+        return tivmList;
+    }
+
+    public void updateInvoiceIncludingInvoiceItems(TotalInvoiceViewModel tvm)
+    {
+        InvoiceViewModel ivm = invoiceClient.findInvoiceViewModelByInvoiceId(tvm.getInvoiceId());
+        ivm.setCustomerId(tvm.getCustomerViewModel().getCustomerId());
+        ivm.setPurchaseDate(tvm.getPurchaseDate());
+        List<InvoiceItemViewModel> iivmList = tvm.getInvItemList();
+        List<InvoiceItem> iiList = new ArrayList<>();
+        iivmList.stream().forEach(iivm -> {
+            InvoiceItem invoiceItem = new InvoiceItem();
+            {
+                if (iivm.getInvoiceItemId()==null) invoiceItem.setInvoiceItemId(0);
+                else invoiceItem.setInvoiceItemId(iivm.getInvoiceItemId());
+                invoiceItem.setInvoiceId(iivm.getInvoiceId());
+                invoiceItem.setInventoryId(iivm.getInventoryId());
+                invoiceItem.setQuantity(iivm.getQuantity());
+                invoiceItem.setUnitPrice(iivm.getUnitPrice());
+                iiList.add(invoiceItem);
+            }
+        });
+        ivm.setInvoiceItemList(iiList);
+        invoiceClient.updateInvoiceViewModel(ivm);
+    }
+
+    public void deleteInvoice(Integer invoiceId)
+    {
+        invoiceClient.deleteInvoiceViewModelByInvoiceId(invoiceId);
+    }
+
+    /** Check Quantity */
+    public boolean isQuantityInStock(List<InvoiceItem> outOfStockItems)
+    {
+        if (outOfStockItems.size()!=0) return false;
+        else return true;
+
     }
 
     /** Helper Method - Building the TotalInvoiceViewModel */

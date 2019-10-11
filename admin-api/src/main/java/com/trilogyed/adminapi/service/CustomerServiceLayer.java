@@ -88,6 +88,7 @@ public class CustomerServiceLayer {
 
     public CustomerViewModel buildCustomerViewModel(Customer customer)
     {
+        if (customer==null) return null;
         List<LevelUp> levelUpList = levelUpClient.findLevelUpsByCustomerId(customer.getCustomerId());
         LevelUp levelUp = deleteExtraLevelUps(levelUpList);
 

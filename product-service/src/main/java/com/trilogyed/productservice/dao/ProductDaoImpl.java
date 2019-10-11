@@ -57,7 +57,7 @@ public class ProductDaoImpl implements ProductDao{
     }
 
     @Override
-    public Product getProductByProductId(int productId) {
+    public Product getProductByProductId(Integer productId) {
         try
         {
             return jdbcTemplate.queryForObject(SELECT_PRODUCT_BY_ID,this::mapRowtoProduct,productId);
@@ -83,7 +83,7 @@ public class ProductDaoImpl implements ProductDao{
     }
 
     @Override
-    public void deleteProduct(int productId) {
+    public void deleteProduct(Integer productId) {
 
         jdbcTemplate.update(DELETE_PRODUCT,productId);
     }

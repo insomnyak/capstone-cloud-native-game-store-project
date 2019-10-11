@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface ProductDao {
     Product addProduct(Product product);
-    Product getProductByProductId(int productId);
+    Product getProductByProductId(Integer productId);
     List<Product> getAllProducts();
     void updateProduct(Product product);
-    void deleteProduct(int productId);
+    void deleteProduct(Integer productId);
 }

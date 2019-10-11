@@ -5,7 +5,7 @@ import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class Customer {
-    private int customerId;
+    private Integer customerId;
     @NotBlank
     @Size(max=50)
     private String firstName;
@@ -28,11 +28,11 @@ public class Customer {
     @Size(max=20)
     private String phone;
 
-    public int getCustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 
@@ -97,7 +97,7 @@ public class Customer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return customerId == customer.customerId &&
+        return Objects.equals(customerId, customer.customerId) &&
                 Objects.equals(firstName, customer.firstName) &&
                 Objects.equals(lastName, customer.lastName) &&
                 Objects.equals(street, customer.street) &&

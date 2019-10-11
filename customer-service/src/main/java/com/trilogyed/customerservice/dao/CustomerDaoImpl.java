@@ -63,7 +63,7 @@ public class CustomerDaoImpl implements CustomerDao{
     }
 
     @Override
-    public Customer getCustomerByCustomerId(int customerId) {
+    public Customer getCustomerByCustomerId(Integer customerId) {
         try{
             return jdbcTemplate.queryForObject(GET_CUSTOMER,this::mapRowToCustomer,customerId);
         }catch(EmptyResultDataAccessException e)
@@ -91,7 +91,7 @@ public class CustomerDaoImpl implements CustomerDao{
     }
 
     @Override
-    public void deleteCustomer(int customerId) {
+    public void deleteCustomer(Integer customerId) {
         jdbcTemplate.update(DELETE_CUSTOMER,customerId);
     }
 }

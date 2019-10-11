@@ -1,6 +1,5 @@
 package com.trilogyed.customerservice.controller;
 
-import com.trilogyed.customerservice.dao.CustomerDao;
 import com.trilogyed.customerservice.exception.NotFoundException;
 import com.trilogyed.customerservice.model.Customer;
 import com.trilogyed.customerservice.service.ServiceLayer;
@@ -36,7 +35,7 @@ public class CustomerServiceController {
 
     @GetMapping(value = "/customer/{customerId}")
     @ResponseStatus(HttpStatus.OK)
-    public Customer getCustomerByCustomerId(@PathVariable(name = "customerId") int customerId)
+    public Customer getCustomerByCustomerId(@PathVariable Integer customerId)
     {
         Customer customer = sl.findCustomer(customerId);
         if(customer==null) throw new NotFoundException("No Customer exists with this id.");
@@ -45,16 +44,15 @@ public class CustomerServiceController {
 
     @PutMapping(value = "/customer")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateCustomer(@RequestBody @Valid Customer customer, @PathVariable(name = "customerId") int customerId)
+    public void updateCustomer(@RequestBody @Valid Customer customer)
     {
-        if(customer.getCustomerId()==0) customer.setCustomerId(customerId);
-        if(customer.getCustomerId()!=customerId) throw new NotFoundException("No customer exist with this id.");
+        if(sl.findCustomer(customer.getCustomerId())==null) throw new NotFoundException("No customer exist with this id.");
         sl.updateCustomer(customer);
     }
 
     @DeleteMapping(value = "/customer/{customerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCustomer(@PathVariable(name = "customerId") int customerId)
+    public void deleteCustomer(@PathVariable Integer customerId)
     {
         if(sl.findCustomer(customerId)==null) throw new NotFoundException("Cannot find a customer with this id in database");
         sl.deleteCustomer(customerId);
