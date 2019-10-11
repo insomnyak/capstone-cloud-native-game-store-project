@@ -4,14 +4,23 @@ import java.util.List;
 import java.util.Objects;
 
 public class ProductViewModel extends Product {
-    private List<Inventory> inventory;
+    private Integer inventoryId;
+    private Integer quantity;
 
-    public List<Inventory> getInventory() {
-        return inventory;
+    public Integer getInventoryId() {
+        return inventoryId;
     }
 
-    public void setInventory(List<Inventory> inventory) {
-        this.inventory = inventory;
+    public void setInventoryId(Integer inventoryId) {
+        this.inventoryId = inventoryId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     @Override
@@ -20,11 +29,20 @@ public class ProductViewModel extends Product {
         if (!(o instanceof ProductViewModel)) return false;
         if (!super.equals(o)) return false;
         ProductViewModel that = (ProductViewModel) o;
-        return Objects.equals(getInventory(), that.getInventory());
+        return Objects.equals(getInventoryId(), that.getInventoryId()) &&
+                Objects.equals(getQuantity(), that.getQuantity());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getInventory());
+        return Objects.hash(super.hashCode(), getInventoryId(), getQuantity());
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " ProductViewModel{" +
+                "inventoryId=" + inventoryId +
+                ", quantity=" + quantity +
+                '}';
     }
 }
