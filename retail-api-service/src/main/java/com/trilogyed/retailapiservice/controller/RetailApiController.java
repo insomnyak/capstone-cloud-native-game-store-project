@@ -1,6 +1,8 @@
 package com.trilogyed.retailapiservice.controller;
 
 import com.trilogyed.retailapiservice.domain.*;
+import com.trilogyed.retailapiservice.service.ServiceLayer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +11,9 @@ import java.util.List;
 
 @RestController
 public class RetailApiController {
+
+    @Autowired
+    ServiceLayer sl;
 
     @GetMapping("/inventories")
     @ResponseStatus(HttpStatus.OK)
@@ -48,21 +53,22 @@ public class RetailApiController {
 //
 //    }
 
-    @GetMapping("/customers/{customerId}")
-    @ResponseStatus(HttpStatus.OK)
-    public Customer getCustomer(@PathVariable Integer customerId) {
-        return null;
-    }
+    // admin api only
+//    @GetMapping("/customers")
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<Customer> getAllCustomers() {
+//        return null;
+//    }
 
     @GetMapping("/customers/{customerId}")
     @ResponseStatus(HttpStatus.OK)
-    public Customer getCustomerByCustomerId() {
+    public Customer getCustomerByCustomerId(@PathVariable Integer customerId) {
         return null;
     }
 
     @PostMapping("/order")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderViewModel createInvoice(@RequestBody @Valid OrderViewModel ovm) {
-        return null;
+        return sl.create(ovm);
     }
 }
