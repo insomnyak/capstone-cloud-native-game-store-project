@@ -1,7 +1,9 @@
 package com.trilogyed.levelupservice.queue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.insomnyak.util.MapClasses;
 import com.trilogyed.levelupservice.LevelUpServiceApplication;
+import com.trilogyed.levelupservice.model.LevelUp;
 import com.trilogyed.levelupservice.service.ServiceLayer;
 import com.trilogyed.queue.LevelUpViewModel;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -36,6 +38,13 @@ public class MessageListener {
             LevelUpViewModel lupvm = mapper.readValue(body, LevelUpViewModel.class);
             sl.update(lupvm);
             return null;
+        } else if (key.matches("^level-up[.]update-fallback[.].*$")) {
+            LevelUpViewModel luvm = mapper.readValue(body, LevelUpViewModel.class);
+            sl.cleanLevelUp(luvm.getCustomerId(), luvm.getPoints());
+            return null;
+        } else if (key.matches("^level-up[.]consolidate-customerId[.].*$")) {
+            LevelUp levelUp = sl.cleanLevelUp(Integer.parseInt(body), null);
+            return (new MapClasses<>(levelUp, LevelUpViewModel.class)).mapFirstToSecond(false);
         } else if (key.matches("^level-up[.]deleteByLevelUpId[.].*$")) {
             try {
                 sl.delete(Integer.parseInt(body));

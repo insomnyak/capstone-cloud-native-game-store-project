@@ -11,7 +11,7 @@ public class Customer {
             "If you do not have a customerId, please reach out to your Admin Professional " +
             "so they can create one for you.")
     @Min(value = 1)
-    private int customerId;
+    private Integer customerId;
 
     @NotBlank(message = "Please provide your first name. " +
             "This must match the entry in the system. Use /customers/{customerId} for exact values used.")
@@ -49,11 +49,11 @@ public class Customer {
     @Size(max=20)
     private String phone;
 
-    public int getCustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
     }
 
@@ -118,7 +118,7 @@ public class Customer {
         if (this == o) return true;
         if (!(o instanceof Customer)) return false;
         Customer customer = (Customer) o;
-        return getCustomerId() == customer.getCustomerId() &&
+        return Objects.equals(getCustomerId(), customer.getCustomerId()) &&
                 Objects.equals(getFirstName(), customer.getFirstName()) &&
                 Objects.equals(getLastName(), customer.getLastName()) &&
                 Objects.equals(getStreet(), customer.getStreet()) &&

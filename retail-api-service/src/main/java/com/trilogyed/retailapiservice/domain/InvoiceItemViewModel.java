@@ -89,4 +89,16 @@ public class InvoiceItemViewModel {
                 .hash(getInvoiceItemId(), getInvoiceId(), getInventoryId(), getProduct(), getQuantity(),
                         getUnitPrice());
     }
+
+    @Override
+    public String toString() {
+        return "InvoiceItemViewModel{" +
+                "invoiceItemId=" + invoiceItemId +
+                ", invoiceId=" + invoiceId +
+                ", inventoryId=" + inventoryId +
+                ", product=" + product +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                '}';
+    }
 }

@@ -10,12 +10,6 @@ import java.util.List;
 @FeignClient(name = "U2-customer-service")
 @RequestMapping("/customer")
 public interface CustomerServiceClient {
-    @PostMapping
-    public Customer createCustomer(@RequestBody @Valid Customer customer);
-
-    @GetMapping
-    public List<Customer> getAllCustomers();
-
     @GetMapping(value = "/{customerId}")
     public Customer getCustomerByCustomerId(@PathVariable(name = "customerId") int customerId);
 
@@ -24,4 +18,10 @@ public interface CustomerServiceClient {
 
     @DeleteMapping(value = "/{customerId}")
     public void deleteCustomer(@PathVariable(name = "customerId") int customerId);
+
+//    @PostMapping
+//    public Customer createCustomer(@RequestBody @Valid Customer customer);
+
+//    @GetMapping
+//    public List<Customer> getAllCustomers();
 }

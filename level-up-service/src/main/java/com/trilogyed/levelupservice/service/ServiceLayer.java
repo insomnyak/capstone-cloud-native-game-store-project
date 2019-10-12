@@ -99,7 +99,12 @@ public class ServiceLayer {
         if (newPoints == null) newPoints = 0;
 
         List<LevelUp> levelUps = dao.findByCustomerId(customerId);
-        if (levelUps.size() <= 1) return null;
+        if (levelUps.size() == 0) return null;
+        if (levelUps.size() == 1 && newPoints > 0) {
+            LevelUp levelUp = levelUps.get(0);
+            levelUp.setPoints(levelUp.getPoints() + newPoints);
+            dao.update(levelUp);
+        }
 
         LocalDate memberDate = dao.findEarliestCustomerMemberDate(customerId);
 

@@ -7,7 +7,7 @@ import java.util.Objects;
 public class Product {
     @NotNull
     @Min(value = 1)
-    private int productId;
+    private Integer productId;
 
     @NotBlank
     @Size(max=50)
@@ -25,11 +25,11 @@ public class Product {
     @Digits(integer = 5,fraction = 2)
     private BigDecimal unitCost;
 
-    public int getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
@@ -70,7 +70,7 @@ public class Product {
         if (this == o) return true;
         if (!(o instanceof Product)) return false;
         Product product = (Product) o;
-        return getProductId() == product.getProductId() &&
+        return Objects.equals(getProductId(), product.getProductId()) &&
                 Objects.equals(getProductName(), product.getProductName()) &&
                 Objects.equals(getProductDescription(), product.getProductDescription()) &&
                 Objects.equals(getListPrice(), product.getListPrice()) &&

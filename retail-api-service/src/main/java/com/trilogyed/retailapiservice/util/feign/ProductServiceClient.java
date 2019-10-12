@@ -10,8 +10,6 @@ import java.util.List;
 @FeignClient(name = "U2-product-service")
 @RequestMapping("/product")
 public interface ProductServiceClient {
-    @PostMapping
-    public Product createProduct(@RequestBody @Valid Product product);
 
     @GetMapping
     public List<Product> findAllProducts();
@@ -19,9 +17,12 @@ public interface ProductServiceClient {
     @GetMapping(value = "/{productId}")
     public Product findProductByProductId(@PathVariable(name = "productId") int productId);
 
-    @PutMapping
-    public void updateProduct(@RequestBody @Valid Product product);
+//    @PostMapping
+//    public Product createProduct(@RequestBody @Valid Product product);
 
-    @DeleteMapping(value = "/{productId}")
-    public void deleteProduct(@PathVariable(name = "productId") int productId);
+//    @PutMapping
+//    public void updateProduct(@RequestBody @Valid Product product);
+//
+//    @DeleteMapping(value = "/{productId}")
+//    public void deleteProduct(@PathVariable(name = "productId") int productId);
 }

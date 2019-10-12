@@ -38,4 +38,12 @@ public class CustomerViewModel extends Customer {
     public int hashCode() {
         return Objects.hash(super.hashCode(), getOrders(), getLevelUp());
     }
+
+    @Override
+    public String toString() {
+        return "CustomerViewModel{" +
+                "orders=" + orders +
+                ", levelUp=" + levelUp +
+                "} " + super.toString();
+    }
 }

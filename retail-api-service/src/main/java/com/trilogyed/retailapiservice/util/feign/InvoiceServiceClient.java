@@ -15,12 +15,6 @@ public interface InvoiceServiceClient {
     @PostMapping
     public InvoiceViewModel saveInvoiceViewModel(@RequestBody @Valid InvoiceViewModel ivm);
 
-    @PutMapping
-    public void updateInvoiceViewModel(@RequestBody @Valid InvoiceViewModel ivm);
-
-    @DeleteMapping("/{invoiceId}")
-    public void deleteInvoiceViewModelByInvoiceId(@PathVariable Integer invoiceId);
-
     @GetMapping("/{invoiceId}")
     public InvoiceViewModel findInvoiceViewModelByInvoiceId(@PathVariable Integer invoiceId);
 
@@ -35,5 +29,11 @@ public interface InvoiceServiceClient {
 
     @GetMapping("/customer/{customerId}/count")
     public Integer countInvoicesByCustomerId(@PathVariable Integer customerId);
+
+//    @PutMapping
+//    public void updateInvoiceViewModel(@RequestBody @Valid InvoiceViewModel ivm);
+
+//    @DeleteMapping("/{invoiceId}")
+//    public void deleteInvoiceViewModelByInvoiceId(@PathVariable Integer invoiceId);
 
 }

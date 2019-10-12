@@ -45,4 +45,13 @@ public class InventoryViewModel {
     public int hashCode() {
         return Objects.hash(getInventoryId(), getProduct(), getQuantity());
     }
+
+    @Override
+    public String toString() {
+        return "InventoryViewModel{" +
+                "inventoryId=" + inventoryId +
+                ", product=" + product +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

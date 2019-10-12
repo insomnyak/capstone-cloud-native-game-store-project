@@ -2,6 +2,7 @@ package com.trilogyed.retailapiservice.service;
 
 import com.insomnyak.util.MapClasses;
 import com.trilogyed.queue.shared.viewmodel.LevelUpViewModel;
+import com.trilogyed.retailapiservice.exception.QueueRequestTimeoutException;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,10 @@ import java.util.concurrent.TimeoutException;
 @Component
 public class ServiceLayerRabbitMqHelper {
     private static final String EXCHANGE = "level-up-exchange";
-    private static final String ROUTING_KEY_ADD = "level-up.create.retail.service";
-    private static final String ROUTING_KEY_UPDATE = "level-up.update.retail.service";
-    private static final String ROUTING_KEY_DELETE_BY_LEVEL_UP_ID = "level-up.deleteByLevelUpId.retail.service";
-    private static final String ROUTING_KEY_DELETE_BY_CUSTOMER_ID = "level-up.deleteByCustomerId.retail.service";
+    private static final String ROUTING_KEY_ADD = "level-up.create.retail-api";
+    private static final String ROUTING_KEY_UPDATE = "level-up.update.retail-api";
+    private static final String ROUTING_KEY_UPDATE_FALLBACK = "level-up.update-fallback.retail-api";
+    private static final String ROUTING_KEY_CONSOLIDATE_CUSTOMER_ID = "level-up.consolidate-customerId.retail-api";
     private static final Long TIMEOUT = 8L;
     private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
 
@@ -34,7 +35,7 @@ public class ServiceLayerRabbitMqHelper {
     }
 
     @Transactional
-    public LevelUpViewModel saveLevelUp(LevelUpViewModel luvm) {
+    LevelUpViewModel saveLevelUp(LevelUpViewModel luvm) {
         try {
             luvm.setMemberDate(null);
             LevelUpViewModel luvm2 = (LevelUpViewModel) asyncRabbitTemplate
@@ -44,19 +45,26 @@ public class ServiceLayerRabbitMqHelper {
             (new MapClasses<>(luvm2, luvm)).mapFirstToSecond(false, true);
             return luvm;
         } catch (InterruptedException | TimeoutException | ExecutionException e) {
-            throw new RuntimeException(e.getCause() + " \n " + e.getMessage());
+            throw new QueueRequestTimeoutException(e.getCause() + " \n " + e.getMessage());
         }
     }
 
-    public void updateLevelUp(LevelUpViewModel luvm) {
+    LevelUpViewModel consolidateLevelUpsByCustomerId(Integer customerId) {
+        try {
+            return (LevelUpViewModel) asyncRabbitTemplate.convertSendAndReceiveAsType(
+                    EXCHANGE, ROUTING_KEY_CONSOLIDATE_CUSTOMER_ID, customerId,
+                    ParameterizedTypeReference.forType(LevelUpViewModel.class))
+                    .get(TIMEOUT, TIMEOUT_UNIT);
+        } catch (InterruptedException | TimeoutException | ExecutionException e) {
+            throw new QueueRequestTimeoutException(e.getCause() + " \n " + e.getMessage());
+        }
+    }
+
+    void updateLevelUp(LevelUpViewModel luvm) {
         rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UPDATE, luvm);
     }
 
-    public void deleteByLevelUpId(Integer levelUpId) {
-        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_DELETE_BY_LEVEL_UP_ID, levelUpId);
-    }
-
-    public void deleteByCustomerId(Integer customerId) {
-        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_DELETE_BY_CUSTOMER_ID, customerId);
+    void updateLevelUpFallback(LevelUpViewModel luvm) {
+        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UPDATE_FALLBACK, luvm);
     }
 }
