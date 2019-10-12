@@ -52,4 +52,13 @@ public class Inventory {
     public int hashCode() {
         return Objects.hash(getInventoryId(), getProductId(), getQuantity());
     }
+
+    @Override
+    public String toString() {
+        return "Inventory{" +
+                "inventoryId=" + inventoryId +
+                ", productId=" + productId +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

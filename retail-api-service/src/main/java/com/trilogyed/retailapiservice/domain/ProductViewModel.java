@@ -40,9 +40,9 @@ public class ProductViewModel extends Product {
 
     @Override
     public String toString() {
-        return super.toString() + " ProductViewModel{" +
+        return "ProductViewModel{" +
                 "inventoryId=" + inventoryId +
                 ", quantity=" + quantity +
-                '}';
+                "} " + super.toString();
     }
 }

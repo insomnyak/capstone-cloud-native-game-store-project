@@ -98,4 +98,17 @@ public class OrderViewModel {
         return Objects.hash(getCustomer(), getInvoiceId(), getPurchaseDate(), getInvoiceItems(), getOrderTotal(),
                 getAwardedPoints(), getMemberPoints());
     }
+
+    @Override
+    public String toString() {
+        return "OrderViewModel{" +
+                "customer=" + customer +
+                ", invoiceId=" + invoiceId +
+                ", purchaseDate=" + purchaseDate +
+                ", invoiceItems=" + invoiceItems +
+                ", orderTotal=" + orderTotal +
+                ", awardedPoints=" + awardedPoints +
+                ", memberPoints=" + memberPoints +
+                '}';
+    }
 }

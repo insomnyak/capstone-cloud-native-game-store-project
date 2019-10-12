@@ -15,8 +15,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Component @Primary
@@ -28,52 +26,25 @@ public class ServiceLayer {
     private LevelUpServiceClient levelUpClient;
     private ProductServiceClient productClient;
 
-    @Autowired
-    ServiceLayerRabbitMqHelper rabbitMqHelper;
+    private ServiceLayerRabbitMqHelper rabbitMqHelper;
 
     @Autowired
     public ServiceLayer(CustomerServiceClient customerClient,
                         InventoryServiceClient inventoryClient,
                         InvoiceServiceClient invoiceClient,
                         LevelUpServiceClient levelUpClient,
-                        ProductServiceClient productClient) {
+                        ProductServiceClient productClient,
+                        ServiceLayerRabbitMqHelper rabbitMqHelper) {
         this.customerClient = customerClient;
         this.inventoryClient = inventoryClient;
         this.invoiceClient = invoiceClient;
         this.levelUpClient = levelUpClient;
         this.productClient = productClient;
+        this.rabbitMqHelper = rabbitMqHelper;
     }
 
     @Transactional
     public OrderViewModel create(OrderViewModel ovm) {
-        /*
-        Receive:
-            OrderViewModel:
-                Customer
-                List<InvoiceItems>
-                    - Product
-                    - quantity
-
-        Response:
-            OrderViewModel:
-                awardedPoints
-                LevelUp
-                    - levelUpId
-                    - customerId
-                    - points
-                    - memberDate
-                Customer
-                invoiceId
-                purchaseDate
-                List<InvoiceItemViewModel>
-                    - invoiceItemId
-                    - invoiceId
-                    - inventoryId
-                    - Product
-                    - quantity
-                orderTotal
-         */
-
         /*
             CHECKS
                 1. quantity is 0 < qty < # items in inventory
@@ -150,15 +121,15 @@ public class ServiceLayer {
             orderTotal = orderTotal.add(invoiceItem.getUnitPrice().multiply(new BigDecimal(requestedQty)));
         }
 
-        /*4
-        0. update inventory
-        1. create invoiceViewModel
-        2. set invoiceId & invoiceItemId
-        4. determine total
-        5. determine LevelUp points
-        6. send LevelUp points
-        7. set LevelUp parameters
-        8. return OrderViewModel
+        /*
+            0. update inventory
+            1. create invoiceViewModel
+            2. set invoiceId & invoiceItemId
+            4. determine total
+            5. determine LevelUp points
+            6. send LevelUp points
+            7. set LevelUp parameters
+            8. return OrderViewModel
          */
 
         // update inventory
@@ -178,37 +149,17 @@ public class ServiceLayer {
             (new MapClasses<>(invoiceItem, iivm)).mapFirstToSecond(false, true);
         });
 
-        // set ovm invoiceId & orderTotal
+        // set ovm invoiceId, orderTotal & purchaseDate
         ovm.setOrderTotal(orderTotal);
         ovm.setInvoiceId(ivm.getInvoiceId());
+        ovm.setPurchaseDate(ivm.getPurchaseDate());
 
         // determine LevelUp points
         Integer awardedPoints = calculateAwardedPoints(orderTotal);
         ovm.setAwardedPoints(awardedPoints);
 
         // update levelUp
-        List<LevelUp> levelUpList = levelUpClient.findLevelUpsByCustomerId(customerId);
-        LevelUp levelUp;
-        if (levelUpList.size() > 1) {
-            levelUp = levelUpClient.consolidateLevelUpsByCustomerId(customerId);
-            levelUp.setPoints(levelUp.getPoints() + awardedPoints);
-            rabbitMqHelper.updateLevelUp(
-                    (new MapClasses<>(levelUp, LevelUpViewModel.class)).mapFirstToSecond(false));
-        } else if (levelUpList.size() == 0) {
-            LevelUpViewModel luvm = new LevelUpViewModel();
-            luvm.setCustomerId(customerId);
-            luvm.setMemberDate(LocalDate.now());
-            luvm.setPoints(awardedPoints);
-            luvm = rabbitMqHelper.saveLevelUp(luvm);
-            levelUp = (new MapClasses<>(luvm, LevelUp.class)).mapFirstToSecond(false);
-        } else {
-            levelUp = levelUpList.get(0);
-            levelUp.setPoints(levelUp.getPoints() + awardedPoints);
-            rabbitMqHelper.updateLevelUp(
-                    (new MapClasses<>(levelUp, LevelUpViewModel.class)).mapFirstToSecond(false));
-        }
-
-        ovm.setMemberPoints(levelUp);
+        ovm.setMemberPoints(fetchLevelUpByCustomerId(customerId, awardedPoints));
 
         return ovm;
     }
@@ -339,6 +290,7 @@ public class ServiceLayer {
 
         for (InvoiceViewModel ivm : invoiceViewModelList) {
             OrderViewModel ovm = build(customer, ivm);
+            ovm.setMemberPoints(levelUp);
             ovmList.add(ovm);
         }
 
@@ -347,11 +299,13 @@ public class ServiceLayer {
         return cvm;
     }
 
-    private LevelUp fetchLevelUpByCustomerId(Integer customerId) {
+    private LevelUp fetchLevelUpByCustomerId(Integer customerId)
+            throws LevelUpServiceUnavailableException, QueueRequestTimeoutException {
         List<LevelUp> levelUpList = levelUpClient.findLevelUpsByCustomerId(customerId);
         LevelUp levelUp;
         if (levelUpList.size() > 1) {
-            levelUp = levelUpClient.consolidateLevelUpsByCustomerId(customerId);
+            LevelUpViewModel luvm = rabbitMqHelper.consolidateLevelUpsByCustomerId(customerId);
+            levelUp = (new MapClasses<>(luvm, LevelUp.class)).mapFirstToSecond(true);
         } else if (levelUpList.size() == 0) {
             levelUp = null;
         } else {
@@ -360,25 +314,70 @@ public class ServiceLayer {
         return levelUp;
     }
 
+    private LevelUp fetchLevelUpByCustomerId(Integer customerId, Integer awardedPoints) {
+        LevelUp levelUp = null;
+        boolean useFallback = false;
+        try {
+            levelUp = fetchLevelUpByCustomerId(customerId);
+        } catch (LevelUpServiceUnavailableException | QueueRequestTimeoutException e) {
+            useFallback = true;
+            levelUp = new LevelUp() {{
+                setPoints(awardedPoints);
+                setCustomerId(customerId);
+            }};
+        } finally {
+            try {
+                if (!useFallback) {
+                    if (levelUp != null) {
+                        levelUp.setPoints(levelUp.getPoints() + awardedPoints);
+                        rabbitMqHelper.updateLevelUp(
+                                (new MapClasses<>(levelUp, LevelUpViewModel.class)).mapFirstToSecond(false));
+                    } else {
+                        LevelUpViewModel luvm = new LevelUpViewModel();
+                        luvm.setCustomerId(customerId);
+                        luvm.setMemberDate(LocalDate.now());
+                        luvm.setPoints(awardedPoints);
+                        luvm = rabbitMqHelper.saveLevelUp(luvm);
+                        levelUp = (new MapClasses<>(luvm, LevelUp.class)).mapFirstToSecond(false);
+                    }
+                } else {
+                    rabbitMqHelper.updateLevelUpFallback(
+                            (new MapClasses<>(levelUp, LevelUpViewModel.class)).mapFirstToSecond(false));
+                }
+            } catch (QueueRequestTimeoutException ignore) {}
+        }
+
+        return levelUp;
+    }
+
     private OrderViewModel build(Customer customer, InvoiceViewModel ivm) {
         OrderViewModel ovm = (new MapClasses<>(ivm, OrderViewModel.class)).mapFirstToSecond(true);
         ovm.setCustomer(customer);
-
-        LevelUp levelUp = fetchLevelUpByCustomerId(customer.getCustomerId());
 
         List<InvoiceItem> invoiceItemList = ivm.getInvoiceItems();
         List<InvoiceItemViewModel> invoiceItemViewModelList = new ArrayList<>();
 
         // orderTotal
         final BigDecimal[] orderTotal = {new BigDecimal("0.00").setScale(2, RoundingMode.HALF_UP)};
-        invoiceItemList.stream().forEach(ii -> {
-            orderTotal[0] = orderTotal[0].add(ii.getUnitPrice().multiply(new BigDecimal(ii.getQuantity())));
-        });
+        invoiceItemList.forEach(ii ->
+                orderTotal[0] = orderTotal[0].add(ii.getUnitPrice().multiply(new BigDecimal(ii.getQuantity()))));
         ovm.setOrderTotal(orderTotal[0]);
 
         // points awarded
-        ovm.setAwardedPoints(calculateAwardedPoints(orderTotal[0]));
+        Integer awardedPoints = calculateAwardedPoints(orderTotal[0]);
+        ovm.setAwardedPoints(awardedPoints);
 
+        LevelUp levelUp = null;
+        try {
+            levelUp = fetchLevelUpByCustomerId(customer.getCustomerId());
+        } catch (LevelUpServiceUnavailableException | QueueRequestTimeoutException e) {
+            levelUp = new LevelUp() {{
+                setPoints(awardedPoints);
+                setCustomerId(customer.getCustomerId());
+            }};
+        } finally {
+            ovm.setMemberPoints(levelUp);
+        }
 
         // invoiceItems
         for (InvoiceItem ii : invoiceItemList) {
