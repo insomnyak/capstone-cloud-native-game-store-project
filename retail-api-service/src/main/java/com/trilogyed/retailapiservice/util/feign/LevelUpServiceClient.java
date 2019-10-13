@@ -6,19 +6,12 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @FeignClient(name = "U2-LEVEL-UP-SERVICE", fallback = LevelUpServiceClientFallback.class)
 public interface LevelUpServiceClient {
-
-    @GetMapping("/levelUp/{levelUpId}")
-    public LevelUp findByLevelUpId(@PathVariable Integer levelUpId);
-
-    @GetMapping("/levelUp/count/{levelUpId}")
-    public Integer countByLevelUpId(@PathVariable Integer levelUpId);
-
-    @GetMapping("/levelUp/count/customer/{customerId}")
-    public Integer countLevelUpsByCustomerId(@PathVariable Integer customerId);
 
     @GetMapping("/levelUp/customer/{customerId}")
     public List<LevelUp> findLevelUpsByCustomerId(@PathVariable Integer customerId);
@@ -26,29 +19,14 @@ public interface LevelUpServiceClient {
 
 @Component
 class LevelUpServiceClientFallback implements LevelUpServiceClient {
-
-    @Override
-    public LevelUp findByLevelUpId(@PathVariable Integer levelUpId) {
-        throw levelUpServiceUnavailableException();
-    }
-
-    @Override
-    public Integer countByLevelUpId(@PathVariable Integer levelUpId) {
-        throw levelUpServiceUnavailableException();
-    }
-
-    @Override
-    public Integer countLevelUpsByCustomerId(@PathVariable Integer customerId) {
-        throw levelUpServiceUnavailableException();
-    }
-
-    @Override
     public List<LevelUp> findLevelUpsByCustomerId(@PathVariable Integer customerId) {
-        throw levelUpServiceUnavailableException();
+        return new ArrayList<LevelUp>() {{
+            add(new LevelUp() {{
+                setCustomerId(-1);
+                setPoints(-1);
+                setLevelUpId(-1);
+                setMemberDate(LocalDate.parse("1970-01-01"));
+            }});
+        }};
     }
-
-    private LevelUpServiceUnavailableException levelUpServiceUnavailableException() {
-        return new LevelUpServiceUnavailableException("Level Up Service is not available.");
-    }
-
 }

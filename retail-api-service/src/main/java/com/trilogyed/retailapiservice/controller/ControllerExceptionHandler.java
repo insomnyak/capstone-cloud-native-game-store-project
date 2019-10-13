@@ -1,6 +1,7 @@
 package com.trilogyed.retailapiservice.controller;
 
 import com.netflix.client.ClientException;
+import com.netflix.hystrix.exception.HystrixBadRequestException;
 import com.trilogyed.retailapiservice.exception.*;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
@@ -71,7 +72,7 @@ public class ControllerExceptionHandler {
         return responseEntity;
     }
 
-    @ExceptionHandler(value = {ClientException.class, ServiceUnavailableException.class})
+    @ExceptionHandler(value = {ClientException.class, ServiceUnavailableException.class, HystrixBadRequestException.class})
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ResponseEntity<VndErrors> clientException(Throwable e, WebRequest request) {
         VndErrors error = new VndErrors(request.toString(), "One of the internal services is down " +
@@ -150,6 +151,51 @@ public class ControllerExceptionHandler {
     public ResponseEntity<VndErrors> productUnavailableException(ProductUnavailableException e, WebRequest request) {
         VndErrors error = new VndErrors(request.toString(), e.getMessage());
         ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {CustomerServiceUnavailableException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> customerServiceUnavailableException(CustomerServiceUnavailableException e,
+                                                                         WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {InventoryServiceUnavailableException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> inventoryServiceUnavailableException(InventoryServiceUnavailableException e,
+                                                                          WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {InvoiceServiceUnavailableException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> invoiceServiceUnavailableException(InvoiceServiceUnavailableException e,
+                                                                        WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {LevelUpServiceUnavailableException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> levelUpServiceUnavailableException(LevelUpServiceUnavailableException e,
+                                                                        WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {ProductServiceUnavailableException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> productServiceUnavailableException(ProductServiceUnavailableException e,
+                                                                        WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         return responseEntity;
     }
 }
