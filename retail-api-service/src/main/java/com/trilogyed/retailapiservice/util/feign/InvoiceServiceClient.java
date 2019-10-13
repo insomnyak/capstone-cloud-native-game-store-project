@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @FeignClient(name = "U2-invoice-service", fallback = InvoiceServiceClientFallback.class)
@@ -35,32 +36,35 @@ public interface InvoiceServiceClient {
 
 @Component
 class InvoiceServiceClientFallback implements InvoiceServiceClient {
+    private InvoiceViewModel ivm = new InvoiceViewModel() {{
+        setInvoiceId(-1);
+        setCustomerId(-1);
+    }};
+    private List<InvoiceViewModel> ivmList = new ArrayList<InvoiceViewModel>() {{
+        add(ivm);
+    }};
 
     public InvoiceViewModel saveInvoiceViewModel(@Valid InvoiceViewModel ivm) {
-        throw invoiceServiceUnavailableException();
+        return ivm;
     }
 
     public InvoiceViewModel findInvoiceViewModelByInvoiceId(Integer invoiceId) {
-        throw invoiceServiceUnavailableException();
+        return ivm;
     }
 
     public List<InvoiceViewModel> findAllInvoiceViewModels() {
-        throw invoiceServiceUnavailableException();
+        return ivmList;
     }
 
     public List<InvoiceViewModel> findInvoiceViewModelsByCustomerId(Integer customerId) {
-        throw invoiceServiceUnavailableException();
+        return ivmList;
     }
 
     public Integer countInvoiceByInvoiceId(Integer invoiceId) {
-        throw invoiceServiceUnavailableException();
+        return -1;
     }
 
     public Integer countInvoicesByCustomerId(Integer customerId) {
-        throw invoiceServiceUnavailableException();
-    }
-
-    private InvoiceServiceUnavailableException invoiceServiceUnavailableException() {
-        return new InvoiceServiceUnavailableException("Invoices cannot be processed or retrieved at the moment.");
+        return -1;
     }
 }

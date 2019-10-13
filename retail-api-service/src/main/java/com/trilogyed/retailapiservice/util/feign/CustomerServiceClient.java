@@ -16,6 +16,8 @@ public interface CustomerServiceClient {
 class CustomerServiceClientFallback implements CustomerServiceClient {
 
     public Customer getCustomerByCustomerId(int customerId) {
-        throw new CustomerServiceUnavailableException("Customer data cannot be retrieved at the moment.");
+        return new Customer() {{
+            setCustomerId(-1);
+        }};
     }
 }

@@ -1,14 +1,19 @@
 package com.trilogyed.retailapiservice.util.feign;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.ribbon.proxy.annotation.Hystrix;
 import com.trilogyed.retailapiservice.domain.Inventory;
 import com.trilogyed.retailapiservice.exception.CustomerServiceUnavailableException;
 import com.trilogyed.retailapiservice.exception.InventoryServiceUnavailableException;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @FeignClient(name = "U2-INVENTORY-SERVICE", fallback = InventoryServiceClientFallback.class)
@@ -41,8 +46,16 @@ public interface InventoryServiceClient {
 
 @Component
 class InventoryServiceClientFallback implements InventoryServiceClient {
+    private Inventory inventory = new Inventory() {{
+        setQuantity(-1);
+        setInventoryId(-1);
+        setProductId(-1);
+    }};
+    List<Inventory> inventories = new ArrayList<Inventory>() {{
+        add(inventory);
+    }};
 
-    public void updateInventory(@Valid Inventory inventory) {
+    public void updateInventory(Inventory inventory) {
         throw inventoryServiceUnavailableException();
     }
 
@@ -51,27 +64,27 @@ class InventoryServiceClientFallback implements InventoryServiceClient {
     }
 
     public Inventory findInventoryByInventoryId(Integer inventoryId) {
-        throw inventoryServiceUnavailableException();
+        return inventory;
     }
 
     public List<Inventory> findAllInventories() {
-        throw inventoryServiceUnavailableException();
+        return inventories;
     }
 
     public List<Inventory> findInventoriesByProductId(Integer productId) {
-        throw inventoryServiceUnavailableException();
+        return inventories;
     }
 
     public Integer countInventoryByInventoryId(Integer inventoryId) {
-        throw inventoryServiceUnavailableException();
+        return -1;
     }
 
     public Integer countInventoriesByProductId(Integer productId) {
-        throw inventoryServiceUnavailableException();
+        return -1;
     }
 
     public Inventory consolidateInventoryByProductId(Integer productId) {
-        throw inventoryServiceUnavailableException();
+        return inventory;
     }
 
     private InventoryServiceUnavailableException inventoryServiceUnavailableException() {

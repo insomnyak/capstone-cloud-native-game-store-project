@@ -23,12 +23,18 @@ public interface ProductServiceClient {
 
 @Component
 class ProductServiceClientFallback implements ProductServiceClient {
+    private Product product = new Product() {{
+        setProductId(-1);
+    }};
+    private List<Product> products = new ArrayList<Product>() {{
+        add(product);
+    }};
 
     public List<Product> findAllProducts() {
-        throw new ProductServiceUnavailableException("Products cannot be retrieved at the moment.");
+        return products;
     }
 
     public Product findProductByProductId(int productId) {
-        throw new ProductServiceUnavailableException("Products cannot be retrieved at the moment.");
+        return product;
     }
 }

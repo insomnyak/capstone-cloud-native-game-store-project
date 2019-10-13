@@ -1,5 +1,7 @@
 package com.trilogyed.retailapiservice;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.trilogyed.retailapiservice.exception.CustomerServiceUnavailableException;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

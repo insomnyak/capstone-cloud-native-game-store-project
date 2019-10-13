@@ -6,6 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @FeignClient(name = "U2-LEVEL-UP-SERVICE", fallback = LevelUpServiceClientFallback.class)
@@ -17,13 +19,14 @@ public interface LevelUpServiceClient {
 
 @Component
 class LevelUpServiceClientFallback implements LevelUpServiceClient {
-    @Override
     public List<LevelUp> findLevelUpsByCustomerId(@PathVariable Integer customerId) {
-        throw levelUpServiceUnavailableException();
+        return new ArrayList<LevelUp>() {{
+            add(new LevelUp() {{
+                setCustomerId(-1);
+                setPoints(-1);
+                setLevelUpId(-1);
+                setMemberDate(LocalDate.parse("1970-01-01"));
+            }});
+        }};
     }
-
-    private LevelUpServiceUnavailableException levelUpServiceUnavailableException() {
-        return new LevelUpServiceUnavailableException("Level Up Service is not available.");
-    }
-
 }
