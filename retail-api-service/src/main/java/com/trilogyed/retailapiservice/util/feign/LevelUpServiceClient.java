@@ -9,63 +9,41 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @FeignClient(name = "U2-LEVEL-UP-SERVICE", fallback = LevelUpServiceClientFallback.class)
-@RequestMapping("/levelUp")
 public interface LevelUpServiceClient {
 
-    @GetMapping("/{levelUpId}")
+    @GetMapping("/levelUp/{levelUpId}")
     public LevelUp findByLevelUpId(@PathVariable Integer levelUpId);
 
-    @GetMapping("/count/{levelUpId}")
+    @GetMapping("/levelUp/count/{levelUpId}")
     public Integer countByLevelUpId(@PathVariable Integer levelUpId);
 
-    @GetMapping("/count/customer/{customerId}")
+    @GetMapping("/levelUp/count/customer/{customerId}")
     public Integer countLevelUpsByCustomerId(@PathVariable Integer customerId);
 
-    @GetMapping("/customer/{customerId}")
+    @GetMapping("/levelUp/customer/{customerId}")
     public List<LevelUp> findLevelUpsByCustomerId(@PathVariable Integer customerId);
-
-//    @PutMapping("/customer/{customerId}/consolidate")
-//    public LevelUp consolidateLevelUpsByCustomerId(@PathVariable Integer customerId);
-
-//    @PostMapping
-//    public LevelUp createLevelUp(@RequestBody @Valid LevelUp levelUp);
-
-//    @PutMapping
-//    public void updateLevelUp(@RequestBody @Valid LevelUp levelUp);
-
-//    @DeleteMapping("/{levelUpId}")
-//    public void deleteByLevelUpId(@PathVariable Integer levelUpId);
-//
-//    @GetMapping
-//    public List<LevelUp> findAllLevelUps();
-
-//    @GetMapping("/customer/{customerId}/memberDate")
-//    public LocalDate findEarliestMemberDateForCustomerId(@PathVariable Integer customerId);
-//
-//    @DeleteMapping("/customer/{customerId}")
-//    public void deleteLevelUpByCustomerId(@PathVariable Integer customerId);
 }
 
 @Component
 class LevelUpServiceClientFallback implements LevelUpServiceClient {
 
     @Override
-    public LevelUp findByLevelUpId(Integer levelUpId) {
+    public LevelUp findByLevelUpId(@PathVariable Integer levelUpId) {
         throw levelUpServiceUnavailableException();
     }
 
     @Override
-    public Integer countByLevelUpId(Integer levelUpId) {
+    public Integer countByLevelUpId(@PathVariable Integer levelUpId) {
         throw levelUpServiceUnavailableException();
     }
 
     @Override
-    public Integer countLevelUpsByCustomerId(Integer customerId) {
+    public Integer countLevelUpsByCustomerId(@PathVariable Integer customerId) {
         throw levelUpServiceUnavailableException();
     }
 
     @Override
-    public List<LevelUp> findLevelUpsByCustomerId(Integer customerId) {
+    public List<LevelUp> findLevelUpsByCustomerId(@PathVariable Integer customerId) {
         throw levelUpServiceUnavailableException();
     }
 
