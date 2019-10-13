@@ -4,6 +4,10 @@ import com.trilogyed.productservice.exception.NotFoundException;
 import com.trilogyed.productservice.model.Product;
 import com.trilogyed.productservice.service.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +17,13 @@ import java.util.List;
 
 @RestController
 @RefreshScope
+@CacheConfig(cacheNames = {"productController"})
 public class ProductServiceController {
 
     @Autowired
     ServiceLayer sl;
 
+    @CachePut(key = "#result.getProductId()")
     @PostMapping(value = "/product")
     @ResponseStatus(HttpStatus.CREATED)
     public Product createProduct(@RequestBody @Valid Product product)
@@ -33,6 +39,7 @@ public class ProductServiceController {
         return productList;
     }
 
+    @Cacheable
     @GetMapping(value = "/product/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public Product findProductByProductId(@PathVariable Integer productId)
@@ -42,6 +49,7 @@ public class ProductServiceController {
         return product;
     }
 
+    @CacheEvict(key = "#product.getProductId()")
     @PutMapping(value = "/product")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateProduct(@RequestBody @Valid Product product)
@@ -50,6 +58,7 @@ public class ProductServiceController {
         sl.updateProduct(product);
     }
 
+    @CacheEvict
     @DeleteMapping(value = "/product/{productId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void deleteProduct(@PathVariable Integer productId)

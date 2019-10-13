@@ -214,21 +214,21 @@ public class ServiceLayerTest {
         levelUps2.add(levelUp2c);
 
         //doReturn(levelUp1b).when(levelUpClient).createLevelUp(levelUp1a);
-        doReturn(levelUp1b).when(levelUpClient).findByLevelUpId(1);
-        doReturn(1).when(levelUpClient).countByLevelUpId(1);
-        doReturn(1).when(levelUpClient).countLevelUpsByCustomerId(1);
+        //doReturn(levelUp1b).when(levelUpClient).findByLevelUpId(1);
+        //doReturn(1).when(levelUpClient).countByLevelUpId(1);
+        //doReturn(1).when(levelUpClient).countLevelUpsByCustomerId(1);
         doReturn(levelUps1).when(levelUpClient).findLevelUpsByCustomerId(1);
         //doReturn(LocalDate.parse("2019-01-01")).when(levelUpClient).findEarliestMemberDateForCustomerId(1);
 
         //doReturn(levelUp2b).when(levelUpClient).createLevelUp(levelUp2a);
         //doNothing().when(levelUpClient).updateLevelUp(levelUp2c);
-        doReturn(levelUp2c).when(levelUpClient).findByLevelUpId(2);
-        doReturn(1).when(levelUpClient).countLevelUpsByCustomerId(2);
-        doReturn(1).when(levelUpClient).countByLevelUpId(2);
+        //doReturn(levelUp2c).when(levelUpClient).findByLevelUpId(2);
+        //doReturn(1).when(levelUpClient).countLevelUpsByCustomerId(2);
+        //doReturn(1).when(levelUpClient).countByLevelUpId(2);
         doReturn(levelUps2).when(levelUpClient).findLevelUpsByCustomerId(2);
         //doReturn(LocalDate.parse("2019-02-01")).when(levelUpClient).findEarliestMemberDateForCustomerId(2);
 
-        doReturn(null).when(levelUpClient).findByLevelUpId(5);
+        //doReturn(null).when(levelUpClient).findByLevelUpId(5);
         doReturn(new ArrayList<>()).when(levelUpClient).findLevelUpsByCustomerId(5);
     }
 

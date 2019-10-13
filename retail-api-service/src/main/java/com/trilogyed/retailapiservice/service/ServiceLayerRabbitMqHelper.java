@@ -21,7 +21,7 @@ public class ServiceLayerRabbitMqHelper {
     private static final String ROUTING_KEY_UPDATE = "level-up.update.retail-api";
     private static final String ROUTING_KEY_UPDATE_FALLBACK = "level-up.update-fallback.retail-api";
     private static final String ROUTING_KEY_CONSOLIDATE_CUSTOMER_ID = "level-up.consolidate-customerId.retail-api";
-    private static final Long TIMEOUT = 8L;
+    private static final Long TIMEOUT = 5L;
     private static final TimeUnit TIMEOUT_UNIT = TimeUnit.SECONDS;
 
     private RabbitTemplate rabbitTemplate;

@@ -3,6 +3,11 @@ package com.trilogyed.retailapiservice.controller;
 import com.trilogyed.retailapiservice.domain.*;
 import com.trilogyed.retailapiservice.service.ServiceLayer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +15,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RefreshScope
+@CacheConfig(cacheNames = {"retailController"})
 public class RetailApiController {
 
     @Autowired
@@ -39,18 +46,22 @@ public class RetailApiController {
         return sl.fetchAllProductsWithInventory();
     }
 
+    @Cacheable
     @GetMapping("/customers/{customerId}")
     @ResponseStatus(HttpStatus.OK)
     public Customer getCustomerByCustomerId(@PathVariable Integer customerId) {
         return sl.fetchCustomer(customerId);
     }
 
+    @Cacheable
     @GetMapping("/customers/{customerId}/invoices")
     @ResponseStatus(HttpStatus.OK)
     public CustomerViewModel getCustomerInvoices(@PathVariable Integer customerId) {
         return sl.fetchCustomerViewModel(customerId);
     }
 
+    @CachePut(key = "#result.getInvoiceId()")
+    @CacheEvict(key = "#ovm.getCustomer().getCustomerId()")
     @PostMapping("/order")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderViewModel createInvoice(@RequestBody @Valid OrderViewModel ovm) {

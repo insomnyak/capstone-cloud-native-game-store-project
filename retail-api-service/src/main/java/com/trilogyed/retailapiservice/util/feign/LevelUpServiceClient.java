@@ -11,37 +11,12 @@ import java.util.List;
 @FeignClient(name = "U2-LEVEL-UP-SERVICE", fallback = LevelUpServiceClientFallback.class)
 public interface LevelUpServiceClient {
 
-    @GetMapping("/levelUp/{levelUpId}")
-    public LevelUp findByLevelUpId(@PathVariable Integer levelUpId);
-
-    @GetMapping("/levelUp/count/{levelUpId}")
-    public Integer countByLevelUpId(@PathVariable Integer levelUpId);
-
-    @GetMapping("/levelUp/count/customer/{customerId}")
-    public Integer countLevelUpsByCustomerId(@PathVariable Integer customerId);
-
     @GetMapping("/levelUp/customer/{customerId}")
     public List<LevelUp> findLevelUpsByCustomerId(@PathVariable Integer customerId);
 }
 
 @Component
 class LevelUpServiceClientFallback implements LevelUpServiceClient {
-
-    @Override
-    public LevelUp findByLevelUpId(@PathVariable Integer levelUpId) {
-        throw levelUpServiceUnavailableException();
-    }
-
-    @Override
-    public Integer countByLevelUpId(@PathVariable Integer levelUpId) {
-        throw levelUpServiceUnavailableException();
-    }
-
-    @Override
-    public Integer countLevelUpsByCustomerId(@PathVariable Integer customerId) {
-        throw levelUpServiceUnavailableException();
-    }
-
     @Override
     public List<LevelUp> findLevelUpsByCustomerId(@PathVariable Integer customerId) {
         throw levelUpServiceUnavailableException();
