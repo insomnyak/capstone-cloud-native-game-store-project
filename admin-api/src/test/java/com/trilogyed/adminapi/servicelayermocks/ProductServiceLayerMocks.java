@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 public class ProductServiceLayerMocks {
     private ProductServiceClient productClient;
     private InventoryServiceClient inventoryClient;
-    ProductServiceLayer sl;
+    private ProductServiceLayer sl;
 
     @Test
     public void addGetUpdateDeleteProduct() {

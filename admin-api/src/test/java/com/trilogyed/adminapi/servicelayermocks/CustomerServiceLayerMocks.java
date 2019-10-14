@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class CustomerServiceLayerMocks {
     private CustomerServiceClient customerClient;
     private LevelUpServiceClient levelUpClient;
-    CustomerServiceLayer sl;
+    private CustomerServiceLayer sl;
 
     @Test
     public void addGetUpdateDeleteCustomer()

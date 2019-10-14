@@ -1,5 +1,6 @@
 package com.trilogyed.adminapi.service;
 
+import com.sun.codemodel.internal.JForEach;
 import com.trilogyed.adminapi.domain.CustomerViewModel;
 import com.trilogyed.adminapi.domain.InvoiceItemViewModel;
 import com.trilogyed.adminapi.domain.InvoiceViewModel;
@@ -75,6 +76,19 @@ public class InvoiceServiceLayer {
         return tivmList;
     }
 
+    public List<InvoiceItemViewModel> getItemsByInvoiceId(Integer invoiceId)
+    {
+        InvoiceViewModel invoiceViewModel = invoiceClient.findInvoiceViewModelByInvoiceId(invoiceId);
+        List<InvoiceItem> invoiceItemList = invoiceViewModel.getInvoiceItemList();
+        List<InvoiceItemViewModel> iivmList = new ArrayList<>();
+        for (InvoiceItem invoiceItem: invoiceItemList)
+        {
+            InvoiceItemViewModel iivm = buildInvoiceItemViewModel(invoiceItem);
+            iivmList.add(iivm);
+        }
+        return iivmList;
+    }
+
     public void updateInvoiceIncludingInvoiceItems(TotalInvoiceViewModel tvm)
     {
         InvoiceViewModel ivm = invoiceClient.findInvoiceViewModelByInvoiceId(tvm.getInvoiceId());
@@ -116,17 +130,18 @@ public class InvoiceServiceLayer {
     public TotalInvoiceViewModel buildTotalInvoiceViewModel(InvoiceViewModel ivm)
     {
         if (ivm==null) return null;
+        final BigDecimal[] total = {new BigDecimal("0.00")};
         TotalInvoiceViewModel tivm = new TotalInvoiceViewModel();
         tivm.setInvoiceId(ivm.getInvoiceId());
         tivm.setPurchaseDate(ivm.getPurchaseDate());
         List<InvoiceItem>  invoiceItemList = ivm.getInvoiceItemList();
         List<InvoiceItemViewModel> iivmList = new ArrayList<>();
-        final BigDecimal[] total = {new BigDecimal("0.00")};
-        invoiceItemList.stream().forEach(invoiceItem -> {
+        for(InvoiceItem invoiceItem:invoiceItemList)
+        {
             InvoiceItemViewModel iivm = buildInvoiceItemViewModel(invoiceItem);
             total[0] = iivm.getSubTotal().add(total[0]);
             iivmList.add(iivm);
-        });
+        }
         tivm.setInvItemList(iivmList);
         tivm.setTotalCost(total[0]);
         CustomerViewModel cvm = csl.getCustomer(ivm.getCustomerId());
