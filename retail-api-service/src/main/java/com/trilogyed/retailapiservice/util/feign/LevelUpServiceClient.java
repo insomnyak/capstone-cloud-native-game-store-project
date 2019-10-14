@@ -2,6 +2,7 @@ package com.trilogyed.retailapiservice.util.feign;
 
 import com.trilogyed.retailapiservice.domain.LevelUp;
 import com.trilogyed.retailapiservice.exception.LevelUpServiceUnavailableException;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@FeignClient(name = "U2-LEVEL-UP-SERVICE", fallback = LevelUpServiceClientFallback.class)
+@FeignClient(name = "U2-LEVEL-UP-SERVICE", configuration = HystrixFeignClientConfiguration.class,
+        fallback = LevelUpServiceClientFallback.class)
 public interface LevelUpServiceClient {
 
     @GetMapping("/levelUp/customer/{customerId}")

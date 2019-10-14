@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
-@FeignClient(name = "U2-invoice-service", fallback = InvoiceServiceClientFallback.class)
+@FeignClient(name = "U2-invoice-service", configuration = DefaultFeignClientConfiguration.class)
 public interface InvoiceServiceClient {
 
     @PostMapping("/invoice")
@@ -32,39 +32,4 @@ public interface InvoiceServiceClient {
     @GetMapping("/invoice/customer/{customerId}/count")
     public Integer countInvoicesByCustomerId(@PathVariable Integer customerId);
 
-}
-
-@Component
-class InvoiceServiceClientFallback implements InvoiceServiceClient {
-    private InvoiceViewModel ivm = new InvoiceViewModel() {{
-        setInvoiceId(-1);
-        setCustomerId(-1);
-    }};
-    private List<InvoiceViewModel> ivmList = new ArrayList<InvoiceViewModel>() {{
-        add(ivm);
-    }};
-
-    public InvoiceViewModel saveInvoiceViewModel(@Valid InvoiceViewModel ivm) {
-        return ivm;
-    }
-
-    public InvoiceViewModel findInvoiceViewModelByInvoiceId(Integer invoiceId) {
-        return ivm;
-    }
-
-    public List<InvoiceViewModel> findAllInvoiceViewModels() {
-        return ivmList;
-    }
-
-    public List<InvoiceViewModel> findInvoiceViewModelsByCustomerId(Integer customerId) {
-        return ivmList;
-    }
-
-    public Integer countInvoiceByInvoiceId(Integer invoiceId) {
-        return -1;
-    }
-
-    public Integer countInvoicesByCustomerId(Integer customerId) {
-        return -1;
-    }
 }

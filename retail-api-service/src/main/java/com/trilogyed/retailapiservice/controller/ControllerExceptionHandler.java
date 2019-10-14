@@ -36,7 +36,8 @@ public class ControllerExceptionHandler {
         List<VndErrors.VndError> vndErrorList = new ArrayList<>();
 
         for (FieldError fieldError : fieldErrors) {
-            VndErrors.VndError vndError = new VndErrors.VndError(request.toString(), fieldError.getDefaultMessage());
+            VndErrors.VndError vndError = new VndErrors.VndError(request.toString(),
+                    fieldError.getField() + ": " + fieldError.getDefaultMessage());
             vndErrorList.add(vndError);
         }
 
@@ -75,8 +76,8 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(value = {ClientException.class, ServiceUnavailableException.class, HystrixBadRequestException.class})
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ResponseEntity<VndErrors> clientException(Throwable e, WebRequest request) {
-        VndErrors error = new VndErrors(request.toString(), "One of the internal services is down " +
-                "a the moment. A part or all of your request may have been queued.");
+        VndErrors error = new VndErrors(request.toString(), "Unable to process your request. " +
+                "One of the internal services is down a the moment.");
         ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.SERVICE_UNAVAILABLE);
         return responseEntity;
     }
@@ -198,4 +199,58 @@ public class ControllerExceptionHandler {
         ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
         return responseEntity;
     }
+
+    @ExceptionHandler(value = {AssertionError.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> assertionError(AssertionError e,
+                                                                        WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {MicroserviceUnavailableException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> microserviceUnavailableException(MicroserviceUnavailableException e,
+                                                    WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {RequestException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> requestException(RequestException e,
+                                                    WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {UnsupportedDomainReturnType.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> unsupportedDomainReturnType(UnsupportedDomainReturnType e,
+                                                      WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @ExceptionHandler(value = {UnsupportedHttpStatusException.class})
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<VndErrors> unsupportedHttpStatusException(UnsupportedHttpStatusException e,
+                                                      WebRequest request) {
+        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+//    @ExceptionHandler(value = {Throwable.class})
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ResponseEntity<VndErrors> throwable(Throwable e,
+//                                                    WebRequest request) {
+//        VndErrors error = new VndErrors(request.toString(), e.getMessage());
+//        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+//        return responseEntity;
+//    }
 }
