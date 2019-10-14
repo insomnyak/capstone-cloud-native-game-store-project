@@ -3,7 +3,7 @@ package com.trilogyed.levelupservice.service;
 import com.insomnyak.util.MapClasses;
 import com.trilogyed.levelupservice.dao.LevelUpDao;
 import com.trilogyed.levelupservice.model.LevelUp;
-import com.trilogyed.queue.LevelUpViewModel;
+import com.trilogyed.queue.shared.viewmodel.LevelUpViewModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +42,9 @@ public class ServiceLayer {
 
     @Transactional
     public LevelUpViewModel save(LevelUpViewModel luvm) {
+        if (luvm.getMemberDate() == null) {
+            luvm.setMemberDate(LocalDate.now());
+        }
         LevelUp levelUp = build(luvm);
         levelUp = save(levelUp);
 

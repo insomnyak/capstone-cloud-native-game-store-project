@@ -9,19 +9,15 @@ public class Product {
     @Min(value = 1)
     private Integer productId;
 
-    @NotBlank
     @Size(max=50)
     private String productName;
 
-    @NotBlank
     @Size(max=255)
     private String productDescription;
 
-    @NotNull
     @Digits(integer = 5,fraction = 2)
     private BigDecimal listPrice;
 
-    @NotNull
     @Digits(integer = 5,fraction = 2)
     private BigDecimal unitCost;
 

@@ -5,7 +5,7 @@ import com.insomnyak.util.MapClasses;
 import com.trilogyed.levelupservice.LevelUpServiceApplication;
 import com.trilogyed.levelupservice.model.LevelUp;
 import com.trilogyed.levelupservice.service.ServiceLayer;
-import com.trilogyed.queue.LevelUpViewModel;
+import com.trilogyed.queue.shared.viewmodel.LevelUpViewModel;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,8 @@ import org.springframework.amqp.core.Message;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+
+import static com.insomnyak.util.terminal.AnsiColor.*;
 
 @Service
 public class MessageListener {
@@ -30,7 +32,7 @@ public class MessageListener {
                                                        @Header(AmqpHeaders.RECEIVED_ROUTING_KEY) String key)
             throws IOException {
         String body = new String(message.getBody(), Charset.defaultCharset().name());
-        System.out.println("RECEIVED || key: " + key + " | body: " + body);
+        System.out.println(BLUE + "RECEIVED || key: " + RESET + key + " | body: " + body);
         if (key.matches("^level-up[.]create[.].*$")) {
             LevelUpViewModel luvm = mapper.readValue(body, LevelUpViewModel.class);
             return sl.save(luvm);

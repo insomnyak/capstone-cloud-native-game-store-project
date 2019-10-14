@@ -1,10 +1,12 @@
 package com.trilogyed.retailapiservice.service;
 
 import com.insomnyak.util.MapClasses;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.trilogyed.queue.shared.viewmodel.LevelUpViewModel;
 import com.trilogyed.retailapiservice.domain.*;
 import com.trilogyed.retailapiservice.exception.*;
 import com.trilogyed.retailapiservice.util.feign.*;
+import com.trilogyed.retailapiservice.util.rest.InventoryRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -86,6 +88,7 @@ public class ServiceLayer {
                         "To ensure you are using the correct productId, please use one of the following endpoints: " +
                         "/inventories, /products/inventory", productId));
             }
+            iivm.setProduct(product);
             // CHECK quantity is valid
             List<Inventory> inventoryList = inventoryClient.findInventoriesByProductId(productId);
             Inventory inventory;
@@ -164,6 +167,7 @@ public class ServiceLayer {
         return ovm;
     }
 
+    @HystrixCommand(fallbackMethod = "inventoryFallback")
     public List<InventoryViewModel> fetchAllInventories() {
         List<InventoryViewModel> ivmList = new ArrayList<>();
 
@@ -174,6 +178,10 @@ public class ServiceLayer {
         }
 
         return ivmList;
+    }
+
+    public List<InventoryViewModel> inventoryFallback() {
+        throw new InventoryServiceUnavailableException("Unable to fetch inventory at the moment");
     }
 
     public InventoryViewModel fetchInventoryByInventoryId(Integer inventoryId) {
@@ -288,10 +296,21 @@ public class ServiceLayer {
         List<InvoiceViewModel> invoiceViewModelList =
                 invoiceClient.findInvoiceViewModelsByCustomerId(customer.getCustomerId());
 
+        Integer totalAwardedPoints = 0;
         for (InvoiceViewModel ivm : invoiceViewModelList) {
             OrderViewModel ovm = build(customer, ivm);
+            totalAwardedPoints += ovm.getAwardedPoints();
             ovm.setMemberPoints(levelUp);
             ovmList.add(ovm);
+        }
+
+        if (totalAwardedPoints > levelUp.getPoints()) {
+            levelUp.setPoints(totalAwardedPoints);
+            Thread updateLevelUp = new Thread(() -> {
+                rabbitMqHelper.updateLevelUp((new MapClasses<>(levelUp, LevelUpViewModel.class))
+                        .mapFirstToSecond(false));
+            });
+            updateLevelUp.start();
         }
 
         cvm.setOrders(ovmList);
@@ -383,7 +402,7 @@ public class ServiceLayer {
         for (InvoiceItem ii : invoiceItemList) {
             InvoiceItemViewModel iivm = (new MapClasses<>(ii, InvoiceItemViewModel.class)).mapFirstToSecond(false);
             Inventory inventory = inventoryClient.findInventoryByInventoryId(ii.getInventoryId());
-            iivm.setProduct(productClient.findProductByProductId(inventory.getProductId()));
+            if (inventory != null) iivm.setProduct(productClient.findProductByProductId(inventory.getProductId()));
             invoiceItemViewModelList.add(iivm);
         }
 
