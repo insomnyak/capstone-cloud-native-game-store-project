@@ -1,5 +1,7 @@
 package com.trilogyed.adminapi.domain;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.trilogyed.adminapi.model.InvoiceItem;
 
 import java.time.LocalDate;
@@ -10,6 +12,9 @@ public class InvoiceViewModel {
     private Integer invoiceId;
     private Integer customerId;
     private LocalDate purchaseDate;
+
+    //@JsonAlias(value = "invoiceItem")
+    @JsonProperty(value = "invoiceItems")
     List<InvoiceItem> invoiceItemList;
 
     public Integer getInvoiceId() {

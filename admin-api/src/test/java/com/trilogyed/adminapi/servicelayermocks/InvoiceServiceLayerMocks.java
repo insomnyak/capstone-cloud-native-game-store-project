@@ -191,7 +191,7 @@ public class InvoiceServiceLayerMocks {
         doReturn(null).when(invoiceClient).findInvoiceViewModelByInvoiceId(4);
 
         /** Testing the adding of an invoice */
-        sl = new InvoiceServiceLayer(invoiceClient, inventoryClient, productClient, csl);
+        sl = new InvoiceServiceLayer(invoiceClient, inventoryClient, productClient,csl);
         TotalInvoiceViewModel tivm = sl.createInvoice(ivm);
         TotalInvoiceViewModel tivm1 = sl.getInvoice(tivm.getInvoiceId());
         assertEquals(tivm,tivm1);

@@ -36,7 +36,7 @@ public class ProductServiceLayer {
         product = productClient.createProduct(product);
         /** Creating inventory */
         Inventory inventory = new Inventory();
-        inventory.setProductId(ivm.getProductId());
+        inventory.setProductId(product.getProductId());
         if (ivm.getQuantityInInventory()==null) inventory.setQuantity(0);
         else inventory.setQuantity(ivm.getQuantityInInventory());
         inventory = inventoryClient.createInventory(inventory);
@@ -120,9 +120,11 @@ public class ProductServiceLayer {
         ivm.setListPrice(product.getListPrice());
         ivm.setUnitCost(product.getUnitCost());
         List<Inventory> inventoryList = inventoryClient.findInventoriesByProductId(product.getProductId());
-        Inventory inventory = deleteExtraInventories(inventoryList);
-        ivm.setInventoryId(inventory.getInventoryId());
-        ivm.setQuantityInInventory(inventory.getQuantity());
+        if (inventoryList.size() > 0) {
+            Inventory inventory = deleteExtraInventories(inventoryList);
+            ivm.setInventoryId(inventory.getInventoryId());
+            ivm.setQuantityInInventory(inventory.getQuantity());
+        }
         return ivm;
     }
 

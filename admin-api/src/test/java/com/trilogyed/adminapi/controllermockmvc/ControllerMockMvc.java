@@ -26,38 +26,38 @@ import java.util.List;
 @WebMvcTest(AdminAPIController.class)
 @ImportAutoConfiguration(RefreshAutoConfiguration.class)
 public class ControllerMockMvc {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper mapper;
-
-    @MockBean
-    private CustomerServiceLayer csl;
-
-    @MockBean
-    private InvoiceServiceLayer isl;
-
-    @MockBean
-    private ProductServiceLayer psl;
-
-    @Before
-    public void setUp() throws Exception {
-        //constructSampleData();
-    }
-
-    private Customer requestCreateCustomer;
-    private CustomerViewModel responseCustomer;
-    private CustomerViewModel additionalCustomer;
-    private List<CustomerViewModel> customerList;
-    private CustomerViewModel updateCustomer;
-    private LevelUp updateLevelUp;
-    private CustomerViewModel deleteCustomer;
-
-    private InvoiceViewModel requestIVM;
-    private TotalInvoiceViewModel responseTIVM;
-
-    private InvoiceViewModel requestUpdateIVM;
+//    @Autowired
+//    private MockMvc mockMvc;
+//
+//    @Autowired
+//    private ObjectMapper mapper;
+//
+//    @MockBean
+//    private CustomerServiceLayer csl;
+//
+//    @MockBean
+//    private InvoiceServiceLayer isl;
+//
+//    @MockBean
+//    private ProductServiceLayer psl;
+//
+//    @Before
+//    public void setUp() throws Exception {
+//        //constructSampleData();
+//    }
+//
+//    private Customer requestCreateCustomer;
+//    private CustomerViewModel responseCustomer;
+//    private CustomerViewModel additionalCustomer;
+//    private List<CustomerViewModel> customerList;
+//    private CustomerViewModel updateCustomer;
+//    private LevelUp updateLevelUp;
+//    private CustomerViewModel deleteCustomer;
+//
+//    private InvoiceViewModel requestIVM;
+//    private TotalInvoiceViewModel responseTIVM;
+//
+//    private InvoiceViewModel requestUpdateIVM;
 
 
 }
