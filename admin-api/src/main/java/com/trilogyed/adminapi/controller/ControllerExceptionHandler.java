@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.trilogyed.adminapi.exception.CannotCreateInvoice;
 import com.trilogyed.adminapi.exception.NotFoundException;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
