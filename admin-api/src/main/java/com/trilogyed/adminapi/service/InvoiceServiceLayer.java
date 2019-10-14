@@ -27,7 +27,7 @@ public class InvoiceServiceLayer {
     private CustomerServiceLayer csl;
 
     @Autowired
-    public InvoiceServiceLayer(InvoiceServiceClient invoiceClient, InventoryServiceClient inventoryClient, ProductServiceClient productClient, CustomerServiceLayer csl) {
+    public InvoiceServiceLayer(InvoiceServiceClient invoiceClient, InventoryServiceClient inventoryClient, ProductServiceClient productClient,CustomerServiceLayer csl) {
         this.invoiceClient = invoiceClient;
         this.inventoryClient = inventoryClient;
         this.productClient = productClient;
@@ -40,11 +40,14 @@ public class InvoiceServiceLayer {
         List<InvoiceItem> iiList = ivm.getInvoiceItemList();
         List<InvoiceItem> outOfStockItems = new ArrayList<>();
         iiList.stream().forEach(invoiceItem -> {
-            Inventory inventory = inventoryClient.findInventoryByInventoryId(invoiceItem.getInventoryId());
-            if(invoiceItem.getQuantity()>inventory.getQuantity()) outOfStockItems.add(invoiceItem);
-        });
-        if (isQuantityInStock(outOfStockItems)==false) throw new CannotCreateInvoice(String.format("These Items are out of stock - (%s)", outOfStockItems));
-        else ivm = invoiceClient.saveInvoiceViewModel(ivm);
+                    Inventory inventory = inventoryClient.findInventoryByInventoryId(invoiceItem.getInventoryId());
+                    if (invoiceItem.getQuantity() > inventory.getQuantity()) {
+                        throw new CannotCreateInvoice("One of the items in your list is out of stock. Please check the inventory.");
+                    }
+                    inventory.setQuantity(inventory.getQuantity()- invoiceItem.getQuantity());
+                    inventoryClient.updateInventory(inventory);
+                });
+        ivm = invoiceClient.saveInvoiceViewModel(ivm);
         return buildTotalInvoiceViewModel(ivm);
     }
 
@@ -103,6 +106,13 @@ public class InvoiceServiceLayer {
                 else invoiceItem.setInvoiceItemId(iivm.getInvoiceItemId());
                 invoiceItem.setInvoiceId(iivm.getInvoiceId());
                 invoiceItem.setInventoryId(iivm.getInventoryId());
+                Inventory inventory = inventoryClient.findInventoryByInventoryId(iivm.getInventoryId());
+                if(invoiceItem.getQuantity()>inventory.getQuantity()) {
+                    throw new CannotCreateInvoice("One of the items in your list is out of stock. Please check the inventory.");
+                }else {
+                    inventory.setQuantity(inventory.getQuantity() - invoiceItem.getQuantity());
+                    inventoryClient.updateInventory(inventory);
+                }
                 invoiceItem.setQuantity(iivm.getQuantity());
                 invoiceItem.setUnitPrice(iivm.getUnitPrice());
                 iiList.add(invoiceItem);
@@ -145,7 +155,8 @@ public class InvoiceServiceLayer {
         tivm.setInvItemList(iivmList);
         tivm.setTotalCost(total[0]);
         CustomerViewModel cvm = csl.getCustomer(ivm.getCustomerId());
-        cvm.setPoints(calculatePoints(total[0]));
+        int points = calculatePoints(total[0]) + cvm.getPoints();
+        cvm.setPoints(points);
         csl.updateCustomer(cvm);
         tivm.setCustomerViewModel(cvm);
         return tivm;
@@ -192,6 +203,7 @@ public class InvoiceServiceLayer {
         Inventory inventory = inventoryClient.findInventoryByInventoryId(invoiceItem.getInventoryId());
         Product product = productClient.findProductByProductId(inventory.getProductId());
         iivm.setProductName(product.getProductName());
+
         iivm.setQuantity(invoiceItem.getQuantity());
         iivm.setUnitPrice(invoiceItem.getUnitPrice());
         BigDecimal subTotal = invoiceItem.getUnitPrice().multiply(new BigDecimal(invoiceItem.getQuantity())).setScale(2);

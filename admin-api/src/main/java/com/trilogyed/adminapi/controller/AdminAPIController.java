@@ -16,6 +16,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ import java.util.List;
 @RestController
 @RefreshScope
 @CacheConfig(cacheNames = {"adminApi"})
+@RequestMapping(value = "/admin")
 public class AdminAPIController {
 
     @Autowired
@@ -97,7 +99,7 @@ public class AdminAPIController {
     }
 
     @CachePut(key = "#result.getInvoiceId()")
-    @PostMapping(value = "/invoice")
+    @PostMapping(value = "/invoice",consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public TotalInvoiceViewModel createInvoice(@RequestBody @Valid InvoiceViewModel ivm)
     {
@@ -199,7 +201,7 @@ public class AdminAPIController {
     @CachePut(key = "#result.getProductId()")
     @PostMapping(value = "/product")
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemViewModel createProduct(@RequestBody @Valid ItemViewModel ivm)
+    public ItemViewModel createProductViewModel(@RequestBody @Valid ItemViewModel ivm)
     {
         return psl.createItem(ivm);
     }
@@ -208,6 +210,7 @@ public class AdminAPIController {
     @ResponseStatus(HttpStatus.OK)
     public List<ItemViewModel> findAllProducts()
     {
+        System.out.println("Checking...");
         return psl.findAllItems();
     }
 
@@ -263,7 +266,7 @@ public class AdminAPIController {
     @CachePut(key = "#result.getCustomerId()")
     @PostMapping(value = "/customer")
     @ResponseStatus(HttpStatus.CREATED)
-    public CustomerViewModel createCustomer(@RequestBody @Valid Customer customer)
+    public CustomerViewModel createCustomerViewModel(@RequestBody @Valid Customer customer)
     {
         return csl.createCustomer(customer);
     }

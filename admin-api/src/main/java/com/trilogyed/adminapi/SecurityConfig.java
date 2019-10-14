@@ -1,8 +1,6 @@
 package com.trilogyed.adminapi;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -41,15 +39,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.httpBasic();
         httpSecurity
                 .authorizeRequests()
-                .mvcMatchers(HttpMethod.GET,"/product").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
-                .mvcMatchers(HttpMethod.GET,"/product/{productId}").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
-                .mvcMatchers(HttpMethod.GET,"/product/invoice/{invoiceId}").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
-                .mvcMatchers(HttpMethod.GET,"/product/inventory").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
-                .mvcMatchers(HttpMethod.PUT,"/inventory/{inventoryId}").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
-                .mvcMatchers(HttpMethod.PUT,"/product/{productId}").hasAnyAuthority("TEAM LEAD","MANAGER","ADMIN")
-                .mvcMatchers(HttpMethod.POST,"/customer").hasAnyAuthority("TEAM LEAD","MANAGER","ADMIN")
-                .mvcMatchers(HttpMethod.POST,"/product").hasAnyAuthority("MANAGER","ADMIN")
-                .anyRequest().hasAuthority("ADMIN");
+                .mvcMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ADMIN")
+                .mvcMatchers(HttpMethod.PUT, "/admin/**").hasAuthority("ADMIN")
+                .mvcMatchers(HttpMethod.GET, "/admin/**").hasAuthority("ADMIN")
+                .mvcMatchers(HttpMethod.DELETE,"/admin/**").hasAuthority("ADMIN")
+                .mvcMatchers(HttpMethod.GET,"/admin/product").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
+                .mvcMatchers(HttpMethod.GET,"/admin/product/{productId}").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
+                .mvcMatchers(HttpMethod.GET,"/admin/product/invoice/{invoiceId}").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
+                .mvcMatchers(HttpMethod.GET,"/admin/product/{inventoryId}").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
+                .mvcMatchers(HttpMethod.PUT,"/admin/inventory/{inventoryId}").hasAnyAuthority("EMPLOYEE","TEAM LEAD","MANAGER","ADMIN")
+                .mvcMatchers(HttpMethod.PUT,"/admin/product/{productId}").hasAnyAuthority("TEAM LEAD","MANAGER","ADMIN")
+                .mvcMatchers(HttpMethod.POST,"/admin/customer").hasAnyAuthority("TEAM LEAD","MANAGER","ADMIN")
+                .mvcMatchers(HttpMethod.POST,"/admin/product").hasAnyAuthority("MANAGER","ADMIN")
+                .anyRequest().permitAll();
         httpSecurity
                 .logout()
                 .clearAuthentication(true)

@@ -19,11 +19,11 @@ public interface InventoryServiceClient {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateInventory(@RequestBody @Valid Inventory inventory);
 
-    @DeleteMapping("/{inventoryId}")
+    @DeleteMapping(value = "/{inventoryId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void deleteInventory(@PathVariable Integer inventoryId);
 
-    @GetMapping("/{inventoryId}")
+    @GetMapping(value = "/{inventoryId}")
     @ResponseStatus(HttpStatus.OK)
     public Inventory findInventoryByInventoryId(@PathVariable Integer inventoryId);
 
