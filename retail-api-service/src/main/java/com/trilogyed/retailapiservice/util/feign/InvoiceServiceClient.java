@@ -1,14 +1,10 @@
 package com.trilogyed.retailapiservice.util.feign;
 
 import com.trilogyed.retailapiservice.domain.InvoiceViewModel;
-import com.trilogyed.retailapiservice.exception.InvoiceServiceUnavailableException;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @FeignClient(name = "U2-invoice-service", configuration = DefaultFeignClientConfiguration.class)

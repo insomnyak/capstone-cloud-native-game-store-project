@@ -67,4 +67,12 @@ public class RetailApiController {
     public OrderViewModel createInvoice(@RequestBody @Valid OrderViewModel ovm) {
         return sl.create(ovm);
     }
+
+    @CacheEvict
+    @DeleteMapping("/customer/{customerId}/cache")
+    public void evictCacheByCustomerId(@PathVariable Integer customerId) {}
+
+    @CacheEvict(allEntries = true)
+    @DeleteMapping("/retail-api/cache")
+    public void evictCache() {};
 }

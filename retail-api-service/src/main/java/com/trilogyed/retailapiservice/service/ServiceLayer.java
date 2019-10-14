@@ -1,6 +1,7 @@
 package com.trilogyed.retailapiservice.service;
 
 import com.insomnyak.util.MapClasses;
+import com.netflix.client.ClientException;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.trilogyed.queue.shared.viewmodel.LevelUpViewModel;
 import com.trilogyed.retailapiservice.domain.*;
@@ -319,7 +320,7 @@ public class ServiceLayer {
     }
 
     private LevelUp fetchLevelUpByCustomerId(Integer customerId)
-            throws LevelUpServiceUnavailableException, QueueRequestTimeoutException {
+            throws QueueRequestTimeoutException, MicroserviceUnavailableException {
         List<LevelUp> levelUpList = levelUpClient.findLevelUpsByCustomerId(customerId);
         LevelUp levelUp;
         if (levelUpList.size() > 1) {
@@ -338,12 +339,11 @@ public class ServiceLayer {
         boolean useFallback = false;
         try {
             levelUp = fetchLevelUpByCustomerId(customerId);
-        } catch (LevelUpServiceUnavailableException | QueueRequestTimeoutException e) {
+            if (levelUp.getLevelUpId() == -1) {
+                useFallback = true;
+            }
+        } catch (MicroserviceUnavailableException | QueueRequestTimeoutException e) {
             useFallback = true;
-            levelUp = new LevelUp() {{
-                setPoints(awardedPoints);
-                setCustomerId(customerId);
-            }};
         } finally {
             try {
                 if (!useFallback) {
@@ -360,6 +360,12 @@ public class ServiceLayer {
                         levelUp = (new MapClasses<>(luvm, LevelUp.class)).mapFirstToSecond(false);
                     }
                 } else {
+                    levelUp = new LevelUp() {{
+                        setLevelUpId(-1);
+                        setPoints(awardedPoints);
+                        setCustomerId(customerId);
+                        setMemberDate(LocalDate.now());
+                    }};
                     rabbitMqHelper.updateLevelUpFallback(
                             (new MapClasses<>(levelUp, LevelUpViewModel.class)).mapFirstToSecond(false));
                 }
@@ -389,7 +395,7 @@ public class ServiceLayer {
         LevelUp levelUp = null;
         try {
             levelUp = fetchLevelUpByCustomerId(customer.getCustomerId());
-        } catch (LevelUpServiceUnavailableException | QueueRequestTimeoutException e) {
+        } catch (MicroserviceUnavailableException | QueueRequestTimeoutException e) {
             levelUp = new LevelUp() {{
                 setPoints(awardedPoints);
                 setCustomerId(customer.getCustomerId());
@@ -413,6 +419,6 @@ public class ServiceLayer {
 
     private Integer calculateAwardedPoints(BigDecimal orderTotal) {
         return Integer.parseInt(
-                orderTotal.divide(new BigDecimal("50"), RoundingMode.FLOOR).toBigInteger().toString());
+                orderTotal.divide(new BigDecimal("50"), RoundingMode.FLOOR).toBigInteger().toString())*10;
     }
 }
