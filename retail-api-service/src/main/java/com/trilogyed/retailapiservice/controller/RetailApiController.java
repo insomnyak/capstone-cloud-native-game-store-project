@@ -53,7 +53,7 @@ public class RetailApiController {
         return sl.fetchCustomer(customerId);
     }
 
-    @Cacheable
+    @Cacheable(condition = "#result != null")
     @GetMapping("/customers/{customerId}/invoices")
     @ResponseStatus(HttpStatus.OK)
     public CustomerViewModel getCustomerInvoices(@PathVariable Integer customerId) {

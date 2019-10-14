@@ -1,6 +1,4 @@
-package com.trilogyed.queue;
-
-import com.trilogyed.levelupservice.model.LevelUp;
+package com.trilogyed.queue.shared.viewmodel;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;

@@ -1,7 +1,6 @@
 package com.trilogyed.retailapiservice;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.trilogyed.retailapiservice.exception.CustomerServiceUnavailableException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -36,8 +35,10 @@ public class RetailApiServiceApplication {
 
 	@Bean
 	public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
-		return new Jackson2JsonMessageConverter();
+		ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+		return new Jackson2JsonMessageConverter(objectMapper);
 	}
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(RetailApiServiceApplication.class, args);

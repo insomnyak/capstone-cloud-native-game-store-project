@@ -61,10 +61,10 @@ public class ServiceLayerRabbitMqHelper {
     }
 
     void updateLevelUp(LevelUpViewModel luvm) {
-        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UPDATE, luvm);
+        new Thread(() -> rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UPDATE, luvm)).start();
     }
 
     void updateLevelUpFallback(LevelUpViewModel luvm) {
-        rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UPDATE_FALLBACK, luvm);
+        new Thread(() -> rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UPDATE_FALLBACK, luvm)).start();
     }
 }
