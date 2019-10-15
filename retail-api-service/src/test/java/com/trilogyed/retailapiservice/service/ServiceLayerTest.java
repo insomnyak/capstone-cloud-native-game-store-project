@@ -622,7 +622,7 @@ public class ServiceLayerTest {
         ovmExpected.setPurchaseDate(LocalDate.now());
         BigDecimal orderTotal = ii1b.getUnitPrice().multiply(new BigDecimal(ii1b.getQuantity()));
         ovmExpected.setOrderTotal(orderTotal);
-        ovmExpected.setAwardedPoints(Integer.parseInt(orderTotal.divide(new BigDecimal("50")).toBigInteger().toString()));
+        ovmExpected.setAwardedPoints(10*Integer.parseInt(orderTotal.divide(new BigDecimal("50")).toBigInteger().toString()));
 
         assertEquals(ovmExpected, ovm);
     }
@@ -690,7 +690,7 @@ public class ServiceLayerTest {
         ovmExpected.setPurchaseDate(LocalDate.now());
         BigDecimal orderTotal = ii1b.getUnitPrice().multiply(new BigDecimal(ii1b.getQuantity()));
         ovmExpected.setOrderTotal(orderTotal);
-        ovmExpected.setAwardedPoints(Integer.parseInt(orderTotal.divide(new BigDecimal("50")).toBigInteger().toString()));
+        ovmExpected.setAwardedPoints(10*Integer.parseInt(orderTotal.divide(new BigDecimal("50")).toBigInteger().toString()));
 
         List<OrderViewModel> ovmList = new ArrayList<>();
         ovmList.add(ovmExpected);

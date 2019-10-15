@@ -35,7 +35,7 @@ public class ServiceLayerRabbitMqHelper {
     }
 
     @Transactional
-    LevelUpViewModel saveLevelUp(LevelUpViewModel luvm) {
+    public LevelUpViewModel saveLevelUp(LevelUpViewModel luvm) {
         try {
             luvm.setMemberDate(null);
             LevelUpViewModel luvm2 = (LevelUpViewModel) asyncRabbitTemplate
@@ -60,11 +60,11 @@ public class ServiceLayerRabbitMqHelper {
         }
     }
 
-    void updateLevelUp(LevelUpViewModel luvm) {
+    public void updateLevelUp(LevelUpViewModel luvm) {
         new Thread(() -> rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UPDATE, luvm)).start();
     }
 
-    void updateLevelUpFallback(LevelUpViewModel luvm) {
+    public void updateLevelUpFallback(LevelUpViewModel luvm) {
         new Thread(() -> rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY_UPDATE_FALLBACK, luvm)).start();
     }
 }

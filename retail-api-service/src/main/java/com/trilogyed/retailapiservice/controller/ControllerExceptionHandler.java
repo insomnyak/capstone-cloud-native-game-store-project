@@ -155,51 +155,6 @@ public class ControllerExceptionHandler {
         return responseEntity;
     }
 
-    @ExceptionHandler(value = {CustomerServiceUnavailableException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<VndErrors> customerServiceUnavailableException(CustomerServiceUnavailableException e,
-                                                                         WebRequest request) {
-        VndErrors error = new VndErrors(request.toString(), e.getMessage());
-        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        return responseEntity;
-    }
-
-    @ExceptionHandler(value = {InventoryServiceUnavailableException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<VndErrors> inventoryServiceUnavailableException(InventoryServiceUnavailableException e,
-                                                                          WebRequest request) {
-        VndErrors error = new VndErrors(request.toString(), e.getMessage());
-        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        return responseEntity;
-    }
-
-    @ExceptionHandler(value = {InvoiceServiceUnavailableException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<VndErrors> invoiceServiceUnavailableException(InvoiceServiceUnavailableException e,
-                                                                        WebRequest request) {
-        VndErrors error = new VndErrors(request.toString(), e.getMessage());
-        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        return responseEntity;
-    }
-
-    @ExceptionHandler(value = {LevelUpServiceUnavailableException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<VndErrors> levelUpServiceUnavailableException(LevelUpServiceUnavailableException e,
-                                                                        WebRequest request) {
-        VndErrors error = new VndErrors(request.toString(), e.getMessage());
-        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        return responseEntity;
-    }
-
-    @ExceptionHandler(value = {ProductServiceUnavailableException.class})
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<VndErrors> productServiceUnavailableException(ProductServiceUnavailableException e,
-                                                                        WebRequest request) {
-        VndErrors error = new VndErrors(request.toString(), e.getMessage());
-        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        return responseEntity;
-    }
-
     @ExceptionHandler(value = {AssertionError.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<VndErrors> assertionError(AssertionError e,
