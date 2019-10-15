@@ -17,44 +17,45 @@ import java.util.List;
 @RestController
 @RefreshScope
 @CacheConfig(cacheNames = {"retailController"})
+@RequestMapping("/gameStore")
 public class RetailApiController {
 
     @Autowired
     ServiceLayer sl;
 
-    @GetMapping("/inventories")
+    @GetMapping("/inventory")
     @ResponseStatus(HttpStatus.OK)
     public List<InventoryViewModel> getAllInventory() {
         return sl.fetchAllInventories();
     }
 
-    @GetMapping("/inventories/{inventoryId}")
+    @GetMapping("/inventory/{inventoryId}")
     @ResponseStatus(HttpStatus.OK)
     public InventoryViewModel getInventoryByInventoryId(@PathVariable Integer inventoryId) {
         return sl.fetchInventoryByInventoryId(inventoryId);
     }
 
-    @GetMapping("/products/{productId}")
+    @GetMapping("/product/{productId}")
     @ResponseStatus(HttpStatus.OK)
     public ProductViewModel getProductByProductId(@PathVariable Integer productId) {
         return sl.fetchProductByProductId(productId);
     }
 
-    @GetMapping("/products/inventory")
+    @GetMapping("/product/inventory")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductViewModel> getAllProductsWithInventory() {
         return sl.fetchAllProductsWithInventory();
     }
 
     @Cacheable
-    @GetMapping("/customers/{customerId}")
+    @GetMapping("/customer/{customerId}")
     @ResponseStatus(HttpStatus.OK)
     public Customer getCustomerByCustomerId(@PathVariable Integer customerId) {
         return sl.fetchCustomer(customerId);
     }
 
     @Cacheable(condition = "#result != null")
-    @GetMapping("/customers/{customerId}/invoices")
+    @GetMapping("/customer/{customerId}/invoices")
     @ResponseStatus(HttpStatus.OK)
     public CustomerViewModel getCustomerInvoices(@PathVariable Integer customerId) {
         return sl.fetchCustomerViewModel(customerId);

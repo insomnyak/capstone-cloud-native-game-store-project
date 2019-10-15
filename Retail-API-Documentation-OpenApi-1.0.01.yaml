@@ -1,0 +1,367 @@
+openapi: 3.0.0
+info:
+  title: Retail Game Store Web & Mobile Service!
+  description:
+    A service that allows users to view products, inventory, invoice data and place orders for Game Store.
+  version: 0.0.1
+  
+servers:
+  - url: 'http://localhost:8181'
+    description: Local dev server
+    
+paths:
+  /gameStore/inventory:
+    get:
+      summary: Retrieves all inventories
+      responses:
+        '200':
+          description: Inventory list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryList' 
+        '404':
+          description: Request not found.
+          
+  /gameStore/inventory/{inventoryId}:
+    get:
+      summary: Retrieves the inventory information by Id.
+      parameters: 
+        - name: inventoryId
+          in: path
+          required: true
+          description: id of the inventory you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Inventory object matching given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Inventory'
+        '404':
+          description: Request not found.
+          
+  /gameStore/product/{productId}:
+    get:
+      summary: Retrieves the product information by Id.
+      parameters: 
+        - name: productId
+          in: path
+          required: true
+          description: id of the product you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product object matching given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSummary'
+        '404':
+          description: Request not found.
+    
+  /gameStore/product/inventory:
+    get:
+      summary: Retrieves the list of products whose inventory quantity is greater than zero
+      responses:
+        '200':
+          description: List of products with quantity greater than zero
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSummaryList'
+        '404':
+          description: Request not found.   
+          
+  /gameStore/customer/{customerId}:
+    get:
+      summary: Retrieves the customer information by Id.
+      parameters: 
+        - name: customerId
+          in: path
+          required: true
+          description: id of the customer you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Customer object matching given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          description: Request not found.
+    
+  /gameStore/customer/{customerId}/invoices:
+    get:
+      summary: Retrieves a customer summary along with the respective invoices
+      parameters: 
+        - name: customerId
+          in: path
+          required: true
+          description: id of the customer you would like to retrieve.
+          schema:
+            type: integer
+      responses: 
+        '200':
+          description: successfully retrieved the customer summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerSummary'
+        '404':
+          description: customer with specified customerId not found
+  
+  /gameStore/order:
+    post:
+      summary: submits an order, which generates an invoice
+      requestBody:
+        description: a JSON object with the order details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '201':
+          description: order successfully created
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Order'
+                  - $ref: '#/components/schemas/OrderSimple'
+        '404':
+          description: provided productId, customerId, or Customer details are not found. The Customer details must match exactly. To retrieve the Customer JSON object, use the path /gameStore/customer/{customerId}
+        '422':
+          description: the requestBody is malformed or missing required values
+
+  /gameStore/customer/{customerId}/cache:
+    delete:
+      summary: this path grants the client the ability to evict the cache associated with the specified customerId
+      parameters: 
+        - name: customerId
+          in: path
+          required: true
+          description: id of the customer you would like to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successfully processed
+            
+          
+components:
+  schemas:
+    LevelUp:
+      type: object
+      properties:
+        levelUpId:
+          type: integer
+        customerId:
+          type: integer
+        points:
+          type: integer
+        memberDate: 
+          type: string
+          description: date
+          pattern: 'YYYY-MM-DD'
+    InvoiceItem:
+      type: object
+      properties:
+        invoiceItemId:
+          type: integer
+        invoiceId:
+          type: integer
+        inventoryId: 
+          type: integer
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        product:
+          $ref: '#/components/schemas/Product'
+      required:
+        - quantity
+        - product
+    Inventory:
+      type: object
+      properties:
+        inventoryId:
+          type: integer
+        product:
+          $ref: '#/components/schemas/Product'
+        quantity:
+          type: integer
+    InventoryList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Inventory'
+    Product:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+          maxLength: 50
+        productDescription:
+          type: string
+          maxLength: 255
+        listPrice:
+          type: number
+        unitCost:
+          type: number
+      required: 
+        - productId
+    ProductSummary:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+          maxLength: 50
+        productDescription:
+          type: string
+          maxLength: 255
+        listPrice:
+          type: number
+        unitCost:
+          type: number
+        inventoryId:
+          type: integer
+        quantity:
+          type: integer
+    ProductSummaryList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ProductSummary'
+    Customer:
+      type: object
+      properties:
+        customerId:
+          type: integer
+        firstName:
+          type: string
+          maxLength: 50
+        lastName:
+          type: string
+          maxLength: 50
+        street:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 50
+        zip:
+          type: string
+          maxLength: 10
+        email:
+          type: string
+          maxLength: 75
+        phone:
+          type: string
+          maxLength: 20
+      required:
+        - customerId
+        - firstName
+        - lastName
+        - street
+        - city
+        - zip
+        - email
+        - phone
+    CustomerSummary:
+      type: object
+      properties:
+        customerId:
+          type: integer
+        firstName:
+          type: string
+          maxLength: 50
+        lastName:
+          type: string
+          maxLength: 50
+        street:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 50
+        zip:
+          type: string
+          maxLength: 10
+        email:
+          type: string
+          maxLength: 75
+        phone:
+          type: string
+          maxLength: 20
+        levelUp:
+          $ref: '#/components/schemas/LevelUp'
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    Order:
+      type: object
+      properties:
+        customer:
+          $ref: '#/components/schemas/Customer'
+        invoiceId:
+          type: integer
+        purchaseDate:
+          type: string
+          description: date
+          pattern: 'YYYY-MM-DD'
+        invoiceItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceItem'
+        orderTotal:
+          type: number
+        awardedPoints:
+          type: integer
+          description: corresponds to the number of points in the LevelUp object. However, awardedPoints refers only to the points gained for this specific Order
+        memberPoints:
+          $ref: '#/components/schemas/LevelUp'
+      required: 
+        - customer
+        - invoiceItems
+    OrderSimple:
+      type: object
+      properties:
+        customer:
+          $ref: '#/components/schemas/Customer'
+        invoiceItems:
+          type: array
+          items:
+            type: object
+            properties:
+              quantity:
+                type: integer
+              product:
+                type: object
+                properties:
+                  productId:
+                    type: integer
+                required: 
+                  - productId
+            required: 
+              - quantity
+              - product
+      required: 
+        - customer
+        - invoiceItems
+          
+        
+
+
+
+
+
+
